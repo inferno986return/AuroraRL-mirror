@@ -46,6 +46,9 @@ public class NPCShip extends BasePositionable implements SpaceObject {
 
     private StarshipWeapon[] weapons;
 
+    // this ship can not move
+    private boolean isStationary;
+
     public NPCShip(int x, int y, String sprite, AlienRace race, NPC capitain, String name) {
         super(x, y);
         this.sprite = sprite;
@@ -148,11 +151,27 @@ public class NPCShip extends BasePositionable implements SpaceObject {
         ));
         target.onAttack(world, this, weaponDesc.damage);
 
-        ss.addEffect(new BlasterShotEffect(this, target, world.getCamera(), 800, "blaster_shot"));
+        ss.addEffect(new BlasterShotEffect(this, target, world.getCamera(), 800, weaponDesc.shotSprite));
 
         if (!target.isAlive()) {
             GameLogger.getInstance().logMessage(target.getName() + " destroyed");
             ss.getShips().remove(target);
         }
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void setHostile(boolean hostile) {
+        isHostile = hostile;
+    }
+
+    public boolean isStationary() {
+        return isStationary;
+    }
+
+    public void setStationary(boolean stationary) {
+        isStationary = stationary;
     }
 }
