@@ -118,6 +118,7 @@ public class Planet extends BasePlanet {
         mountainSprites.put(104, "mountains_15");
 
         drawers.put(SurfaceTypes.ROCKS, new TileDrawer("rock", SurfaceTypes.ROCKS));
+        drawers.put(SurfaceTypes.DIRT, new TileDrawer("sand", SurfaceTypes.DIRT));
     }
 
     public Planet(StarSystem owner, Planet other) {
@@ -587,7 +588,7 @@ public class Planet extends BasePlanet {
                         }
 
                         byte st = SurfaceTypes.getType(surface[wrapY(i + ii)][wrapX(j + jj)]);
-                        if (st <= surface[wrapY(i)][wrapX(j)]) {
+                        if (st <= SurfaceTypes.getType(surface[wrapY(i)][wrapX(j)])) {
                             continue;
                         }
                         neighbours.add(st);
