@@ -13,6 +13,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import ru.game.aurora.application.Localization;
+import ru.game.aurora.application.MainMenuController;
 import ru.game.aurora.world.GameEventListener;
 import ru.game.aurora.world.World;
 
@@ -33,8 +34,8 @@ public class GUI {
 
     private Stack<String> screens = new Stack<>();
 
-    public static void init(Nifty n) {
-        instance = new GUI(n);
+    public static void init(GameContainer con, Nifty n) {
+        instance = new GUI(con, n);
     }
 
     public Nifty getNifty() {
@@ -75,6 +76,9 @@ public class GUI {
     }
 
     public String popScreen() {
+        if (screens.isEmpty()) {
+            return null;
+        }
         return screens.pop();
     }
 
@@ -82,12 +86,12 @@ public class GUI {
         nifty.gotoScreen(screens.pop());
     }
 
-    private GUI(Nifty n) {
+    private GUI(GameContainer con, Nifty n) {
         this.nifty = n;
         Localization.registerGUIBungles(nifty);
 
         hackUnicodeFont("dpix_8pt.ttf");
-
+        nifty.registerScreenController(new MainMenuController(n, con));
         nifty.fromXml("gui/screens/main_menu.xml", "main_menu");
     }
 
@@ -109,6 +113,7 @@ public class GUI {
         nifty.registerScreenController(new EarthProgressScreenController(world));
         nifty.registerScreenController(new EarthScreenController(world));
         nifty.registerScreenController(new EngineeringScreenController(world));
+        nifty.registerScreenController(new FailScreenController(world));
         final SurfaceGUIController surfaceGUIController = new SurfaceGUIController(world);
         nifty.registerScreenController(surfaceGUIController);
         nifty.registerScreenController(new LandingPartyEquipScreenController(world));
@@ -119,6 +124,7 @@ public class GUI {
         nifty.addXml("gui/screens/progress_bar.xml");
         nifty.addXml("gui/screens/top_panel.xml");
         nifty.addXml("gui/screens/space_gui.xml");
+        nifty.addXml("gui/screens/fail_screen.xml");
         nifty.addXml("gui/screens/list_screen.xml");
         nifty.addXml("gui/screens/research_screen.xml");
         nifty.addXml("gui/screens/ingame_menu.xml");

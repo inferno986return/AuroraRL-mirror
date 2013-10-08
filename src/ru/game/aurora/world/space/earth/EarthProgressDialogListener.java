@@ -1,7 +1,8 @@
 package ru.game.aurora.world.space.earth;
 
 import ru.game.aurora.dialog.DialogListener;
-import ru.game.aurora.gui.FailScreen;
+import ru.game.aurora.gui.FailScreenController;
+import ru.game.aurora.gui.GUI;
 import ru.game.aurora.world.World;
 
 /**
@@ -22,14 +23,17 @@ public class EarthProgressDialogListener implements DialogListener {
     @Override
     public void onDialogEnded(World world, int returnCode) {
         if (returnCode == -1) {
-            world.setCurrentRoom(FailScreen.createRetirementFailScreen());
+            GUI.getInstance().getNifty().gotoScreen("fail_screen");
+            FailScreenController controller = (FailScreenController) GUI.getInstance().getNifty().findScreenController(FailScreenController.class.getCanonicalName());
+            controller.set("retirement_gameover", "retire");
+
             return;
         }
         world.setCurrentRoom(earth.getOwner());
 
 
         // refilling crew
-        world.getPlayer().getShip().refillCrew();
+        world.getPlayer().getShip().refillCrew(world);
 
     }
 }

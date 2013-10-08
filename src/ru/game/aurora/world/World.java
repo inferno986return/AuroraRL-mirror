@@ -44,6 +44,8 @@ public class World implements Serializable {
 
     private transient boolean updatedThisFrame;
 
+    private transient boolean updatedNextFrame;
+
     private transient StarSystemNamesCollection starSystemNamesCollection = new StarSystemNamesCollection();
 
     private transient List<OverlayWindow> overlayWindows = new LinkedList<OverlayWindow>();
@@ -73,7 +75,8 @@ public class World implements Serializable {
     }
 
     public void update(GameContainer container) {
-        updatedThisFrame = false;
+        updatedThisFrame = updatedNextFrame;
+        updatedNextFrame = false;
 
         if (overlayWindows != null && !overlayWindows.isEmpty()) {
             Iterator<OverlayWindow> iter = overlayWindows.iterator();
@@ -85,6 +88,7 @@ public class World implements Serializable {
             // only one active overlay window
             return;
         }
+
         if (container.getInput().isKeyPressed(Input.KEY_R)) {
             GUI.getInstance().pushCurrentScreen();
             GUI.getInstance().getNifty().gotoScreen("research_screen");
@@ -164,8 +168,8 @@ public class World implements Serializable {
         return currentRoom;
     }
 
-    public Dungeon getCurrentDungeon() {
-        return (currentRoom instanceof Dungeon) ? (Dungeon) currentRoom : null;
+    public IDungeon getCurrentDungeon() {
+        return (currentRoom instanceof IDungeon) ? (IDungeon) currentRoom : null;
     }
 
     public GalaxyMap getGalaxyMap() {
@@ -228,6 +232,13 @@ public class World implements Serializable {
         }
     }
 
+    public void onCrewChanged() {
+        List<GameEventListener> newList = new LinkedList<GameEventListener>(listeners);
+        for (GameEventListener l : newList) {
+            l.onCrewChanged(this);
+        }
+    }
+
     public void onPlayerReturnToEarth() {
         // to avoid concurrent modification exception
         List<GameEventListener> newList = new LinkedList<GameEventListener>(listeners);
@@ -274,5 +285,9 @@ public class World implements Serializable {
 
     public RnDSet getResearchAndDevelopmentProjects() {
         return researchAndDevelopmentProjects;
+    }
+
+    public void setUpdatedNextFrame(boolean updatedNextFrame) {
+        this.updatedNextFrame = updatedNextFrame;
     }
 }

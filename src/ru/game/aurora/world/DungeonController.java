@@ -17,6 +17,7 @@ import ru.game.aurora.application.Camera;
 import ru.game.aurora.application.GameLogger;
 import ru.game.aurora.application.Localization;
 import ru.game.aurora.application.ResourceManager;
+import ru.game.aurora.dialog.Dialog;
 import ru.game.aurora.effects.BlasterShotEffect;
 import ru.game.aurora.effects.Effect;
 import ru.game.aurora.gui.GUI;
@@ -61,6 +62,10 @@ public class DungeonController implements Serializable {
 
     private LandingParty landingParty;
 
+    private Dialog successDialog;
+
+    private IStateChangeListener successListener;
+
     private transient Effect currentEffect = null;
 
     /**
@@ -75,6 +80,12 @@ public class DungeonController implements Serializable {
         this.world = world;
         this.landingParty = world.getPlayer().getLandingParty();
     }
+
+    public DungeonController(World world, Room prevRoom, ITileMap map, boolean wrap, Dialog successDialog) {
+        this(world, prevRoom, map, wrap);
+        this.successDialog = successDialog;
+    }
+
 
     /**
      * This update is used in MOVE mode. Moving landing party around.
@@ -256,20 +267,22 @@ public class DungeonController implements Serializable {
             if (currentEffect.isOver()) {
                 currentEffect = null;
             }
-            return;
+            if (!world.isUpdatedThisFrame()) {
+                return;
+            }
         }
 
         switch (mode) {
             case MODE_MOVE:
                 if (container.getInput().isKeyPressed(Input.KEY_F)) {
-                    mode = MODE_SHOOT;
+                    changeMode();
                     return;
                 }
                 updateMove(container, world);
                 break;
             case MODE_SHOOT:
                 if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
-                    mode = MODE_MOVE;
+                    changeMode();
                     return;
                 }
                 updateShoot(
@@ -314,6 +327,12 @@ public class DungeonController implements Serializable {
             if (allConditionsSatisfied) {
                 GameLogger.getInstance().logMessage(Localization.getText("gui", "surface.objectives_completed"));
                 returnToPrevRoom();
+                if (successDialog != null) {
+                    world.addOverlayWindow(successDialog);
+                }
+                if (successListener != null) {
+                    successListener.stateChanged(world);
+                }
             }
         }
         if (landingParty.getTotalMembers() == 0) {
@@ -365,6 +384,7 @@ public class DungeonController implements Serializable {
         Element popup = nifty.createPopup("landing_party_lost");
         nifty.setIgnoreKeyboardEvents(false);
         nifty.showPopup(nifty.getCurrentScreen(), popup.getId(), null);
+        world.onCrewChanged();
     }
 
     public void returnToPrevRoom() {
@@ -375,5 +395,13 @@ public class DungeonController implements Serializable {
 
     public void setCurrentEffect(Effect currentEffect) {
         this.currentEffect = currentEffect;
+    }
+
+    public void setSuccessDialog(Dialog successDialog) {
+        this.successDialog = successDialog;
+    }
+
+    public void setSuccessListener(IStateChangeListener successListener) {
+        this.successListener = successListener;
     }
 }
