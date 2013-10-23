@@ -21,8 +21,7 @@ import java.util.List;
 /**
  * Interface for different tile map formats.
  */
-public interface ITileMap extends Serializable, ILosBoard
-{
+public interface ITileMap extends Serializable, ILosBoard {
     public List<PlanetObject> getObjects();
 
     public void draw(GameContainer container, Graphics graphics, Camera camera);

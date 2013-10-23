@@ -10,8 +10,7 @@ import java.util.Properties;
  * Date: 23.10.13
  * Time: 15:11
  */
-public class Configuration
-{
+public class Configuration {
     private static Properties properties;
 
     public static void init() throws IOException {
@@ -19,18 +18,15 @@ public class Configuration
         properties.load(new FileInputStream("resources/game.properties"));
     }
 
-    public static int getIntProperty(String key)
-    {
+    public static int getIntProperty(String key) {
         return Integer.parseInt(properties.getProperty(key));
     }
 
-    public static double getDoubleProperty(String key)
-    {
+    public static double getDoubleProperty(String key) {
         return Double.parseDouble(properties.getProperty(key));
     }
 
-    public static Properties getProperties()
-    {
+    public static Properties getProperties() {
         return properties;
     }
 }

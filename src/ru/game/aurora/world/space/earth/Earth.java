@@ -179,7 +179,7 @@ public class Earth extends Planet {
     }
 
     @Override
-    public StringBuilder getScanText(){
+    public StringBuilder getScanText() {
         return new StringBuilder(Localization.getText("races", "Humans.homeworld.description"));
     }
 }

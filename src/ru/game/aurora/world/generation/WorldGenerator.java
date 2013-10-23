@@ -170,7 +170,7 @@ public class WorldGenerator implements Runnable {
             // only large planets have rings and satellites
 
             if (planetSize <= 2) {
-                if (r.nextDouble() < ringsChance ) {
+                if (r.nextDouble() < ringsChance) {
                     planets[i].setRings(r.nextInt() + 1);
                 }
 

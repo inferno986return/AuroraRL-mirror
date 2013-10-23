@@ -25,8 +25,7 @@ import java.util.List;
 /**
  * Map in a format of a TILed EDitor
  */
-public class TILEDMap implements ITileMap
-{
+public class TILEDMap implements ITileMap {
     private static final long serialVersionUID = 1L;
 
     private List<PlanetObject> objects = new LinkedList<>();
@@ -47,13 +46,11 @@ public class TILEDMap implements ITileMap
 
     private transient ILosAlgorithm losAlgorithm;
 
-    public TILEDMap(String mapRef)
-    {
+    public TILEDMap(String mapRef) {
         this.mapRef = mapRef;
     }
 
-    private void loadAlgorithms()
-    {
+    private void loadAlgorithms() {
         final PrecisePermissive p = new PrecisePermissive();
         fovAlgorithm = p;
         losAlgorithm = p;
@@ -64,18 +61,15 @@ public class TILEDMap implements ITileMap
         return objects;
     }
 
-    private int getXCoord(int x)
-    {
+    private int getXCoord(int x) {
         return x / AuroraGame.tileSize;
     }
 
-    private int getYCoord(int y)
-    {
+    private int getYCoord(int y) {
         return (y - 1) / AuroraGame.tileSize; // somehow, y in editor starts from 1
     }
 
-    private void loadObject(int groupId, int objectId)
-    {
+    private void loadObject(int groupId, int objectId) {
         final String typeName = map.getObjectType(groupId, objectId);
         switch (typeName) {
             case "entryPoint": {
@@ -104,8 +98,7 @@ public class TILEDMap implements ITileMap
     }
 
 
-    private void setObstacles(int layerIdx)
-    {
+    private void setObstacles(int layerIdx) {
         for (int x = 0; x < map.getWidth(); ++x) {
             for (int y = 0; y < map.getHeight(); ++y) {
                 if (map.getTileImage(x, y, layerIdx) != null) {
@@ -116,8 +109,7 @@ public class TILEDMap implements ITileMap
     }
 
     // must be called from main thread with OpenGL context
-    private void loadMap()
-    {
+    private void loadMap() {
         try {
             map = new TiledMap(mapRef, "resources/maps");
             flags = new byte[map.getHeight()][map.getWidth()];
