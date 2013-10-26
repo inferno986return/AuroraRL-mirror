@@ -6,6 +6,7 @@
 package ru.game.aurora.gui;
 
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -72,9 +73,15 @@ public class GalaxyMapController extends GameEventListener implements ScreenCont
     }
 
     public void openStarMap() {
-        GalaxyMapScreen gms = new GalaxyMapScreen();
-        world.setCurrentRoom(gms);
-        gms.enter(world);
+        if (world.getCurrentRoom().equals(world.getGalaxyMap())) {
+            GalaxyMapScreen gms = new GalaxyMapScreen();
+            world.setCurrentRoom(gms);
+            gms.enter(world);
+            myScreen.findNiftyControl("starmap_button", Button.class).setText(Localization.getText("gui", "space.galaxy_map_return"));
+        } else {
+            world.setCurrentRoom(world.getGalaxyMap());
+            myScreen.findNiftyControl("starmap_button", Button.class).setText(Localization.getText("gui", "space.galaxy_map"));
+        }
     }
 
     public void openResearchScreen() {
@@ -113,16 +120,17 @@ public class GalaxyMapController extends GameEventListener implements ScreenCont
     }
 
     @Override
-    public void onTurnEnded(World world) {
-        if (!GUI.getInstance().getNifty().getCurrentScreen().getScreenController().equals(this)) {
-            return;
+    public boolean onTurnEnded(World world) {
+        if (GUI.getInstance().getNifty().getCurrentScreen().getScreenController().equals(this)) {
+            updateStats();
         }
-        updateStats();
+        return false;
     }
 
     @Override
-    public void onPlayerShipDamaged(World world) {
+    public boolean onPlayerShipDamaged(World world) {
         updateStats();
+        return false;
     }
 
     public void updateWeapons() {
