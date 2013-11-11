@@ -5,7 +5,6 @@
  */
 package ru.game.aurora.world;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import ru.game.aurora.application.Camera;
@@ -19,7 +18,7 @@ import ru.game.aurora.world.space.SpaceObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ship extends BasePositionable implements SpaceObject {
+public class Ship extends Moving implements SpaceObject {
 
     public static final int MAX_SCIENTISTS = 20;
     public static final int MAX_ENGINEERS = 10;
@@ -44,7 +43,7 @@ public class Ship extends BasePositionable implements SpaceObject {
     private AlienRace humanity;
 
     public Ship(AlienRace humanity, int x, int y) {
-        super(x, y);
+        super(x, y, "aurora");
         this.humanity = humanity;
         name = "Hawking";
         hull = maxHull = 10;
@@ -54,6 +53,7 @@ public class Ship extends BasePositionable implements SpaceObject {
 
     @Override
     public void update(GameContainer container, World world) {
+        super.update(container, world);
         if (world.isUpdatedThisFrame()) {
             for (StarshipWeapon weapon : weapons) {
                 if (weapon.getReloadTimeLeft() > 0) {
@@ -77,8 +77,7 @@ public class Ship extends BasePositionable implements SpaceObject {
 
     @Override
     public void draw(GameContainer container, Graphics g, Camera camera) {
-        g.setColor(Color.white);
-        g.drawImage(ResourceManager.getInstance().getImage("aurora"), camera.getXCoord(x), camera.getYCoord(y), null);
+        super.draw(container, g, camera);
     }
 
     @Override

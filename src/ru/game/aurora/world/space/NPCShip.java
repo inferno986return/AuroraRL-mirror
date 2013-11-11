@@ -7,27 +7,22 @@ package ru.game.aurora.world.space;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import ru.game.aurora.application.Camera;
-import ru.game.aurora.application.GameLogger;
-import ru.game.aurora.application.Localization;
-import ru.game.aurora.application.ResourceManager;
+import ru.game.aurora.application.*;
 import ru.game.aurora.effects.BlasterShotEffect;
 import ru.game.aurora.effects.ExplosionEffect;
 import ru.game.aurora.npc.AlienRace;
 import ru.game.aurora.npc.NPC;
 import ru.game.aurora.npc.shipai.CombatAI;
 import ru.game.aurora.npc.shipai.NPCShipAI;
-import ru.game.aurora.world.BasePositionable;
+import ru.game.aurora.world.Moving;
 import ru.game.aurora.world.Ship;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.equip.StarshipWeapon;
 import ru.game.aurora.world.equip.StarshipWeaponDesc;
 
-public class NPCShip extends BasePositionable implements SpaceObject {
+public class NPCShip extends Moving implements SpaceObject {
 
     private static final long serialVersionUID = 4304196228941570752L;
-
-    private String sprite;
 
     private AlienRace race;
 
@@ -53,8 +48,7 @@ public class NPCShip extends BasePositionable implements SpaceObject {
     private boolean isStationary;
 
     public NPCShip(int x, int y, String sprite, AlienRace race, NPC captain, String name) {
-        super(x, y);
-        this.sprite = sprite;
+        super(x, y, sprite);
         this.race = race;
         this.captain = captain;
         this.name = name;
@@ -66,12 +60,17 @@ public class NPCShip extends BasePositionable implements SpaceObject {
 
     @Override
     public void update(GameContainer container, World world) {
+        super.update(container, world);
+
         if (weapons != null) {
             for (StarshipWeapon w : weapons) {
                 w.reload();
             }
         }
-        if (curSpeed-- > 0) {
+        if (world.isUpdatedThisFrame()) {
+            curSpeed--;
+        }
+        if (curSpeed > 0) {
             return;
         }
         curSpeed = speed;
@@ -97,7 +96,7 @@ public class NPCShip extends BasePositionable implements SpaceObject {
 
     @Override
     public void draw(GameContainer container, Graphics g, Camera camera) {
-        g.drawImage(ResourceManager.getInstance().getImage(sprite), camera.getXCoord(x), camera.getYCoord(y));
+        super.draw(container, g, camera);
     }
 
     /**
@@ -186,6 +185,7 @@ public class NPCShip extends BasePositionable implements SpaceObject {
         }
     }
 
+    @Deprecated
     public void move(int dx, int dy) {
         if (isStationary) {
             return;
@@ -208,10 +208,6 @@ public class NPCShip extends BasePositionable implements SpaceObject {
 
     public void setStationary(boolean stationary) {
         isStationary = stationary;
-    }
-
-    public void setSprite(String sprite) {
-        this.sprite = sprite;
     }
 
     public void setCaptain(NPC captain) {

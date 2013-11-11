@@ -179,10 +179,10 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject {
             return;
         }
 
-        if ((container.getInput().isKeyDown(Input.KEY_UP) && y < -radius)
-                || (container.getInput().isKeyDown(Input.KEY_DOWN) && y >= radius)
-                || (container.getInput().isKeyDown(Input.KEY_LEFT) && x < -radius)
-                || (container.getInput().isKeyDown(Input.KEY_RIGHT) && x >= radius)) {
+        if ((y < -radius)
+                || (y >= radius)
+                || (x < -radius)
+                || (x >= radius)) {
             GameLogger.getInstance().logMessage(Localization.getText("gui", "space.leaving_star_system"));
             world.setCurrentRoom(world.getGalaxyMap());
             world.getGalaxyMap().enter(world);
@@ -421,11 +421,10 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject {
             if (ship.getX() == playerShip.getX() && ship.getY() == playerShip.getY()) {
                 shipAtSameCoords = true;
             }
-            if (world.isUpdatedThisFrame()) {
-                ship.update(container, world);
-                if (!ship.isAlive()) {
-                    iter.remove();
-                }
+
+            ship.update(container, world);
+            if (!ship.isAlive()) {
+                iter.remove();
             }
         }
 
@@ -525,9 +524,8 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject {
 
         final float starX = camera.getXCoord(0) + (camera.getTileWidth() / 2);
         final float starY = camera.getYCoord(0) + camera.getTileHeight() / 2;
-        if (camera.isInViewport(0, 0)) {
-            // draw 3 circles
 
+        if (camera.isInViewport(0, 0)) {
             final Image starImage = star.getImage();
             g.drawImage(starImage, starX - starImage.getWidth() / 2, starY - starImage.getHeight() / 2);
         }
@@ -595,6 +593,7 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject {
 
         g.setColor(Color.red);
         g.drawRect(camera.getXCoord(-radius), camera.getYCoord(-radius), 2 * radius * camera.getTileWidth(), 2 * radius * camera.getTileHeight());
+        g.setColor(Color.white);
 
         player.getShip().draw(container, g, camera);
 
