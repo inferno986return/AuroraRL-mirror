@@ -17,7 +17,7 @@ import java.util.*;
  * Statement:
  * ID;npc text;custom icon (if any)
  * Reply:
- * empty;reply text; target ID;condition;return value
+ * empty;reply text; target ID;condition;return value;flags
  * <p/>
  * If condition is set, it can be one of following: either a variable name, or a variable name sign value, like 'quest.value=4'
  */
@@ -35,7 +35,11 @@ public class DialogCSVConverter {
                 conditions[0] = new Condition(split[0], null, Condition.ConditionType.SET);
             }
         } else {
-            conditions[0] = new Condition(split[0], split[1], Condition.ConditionType.EQUAL);
+            if (split[0].endsWith("!")) {
+                conditions[0] = new Condition(split[0].substring(0, split[0].length() - 1), split[1], Condition.ConditionType.NOT_EQUAL);
+            } else {
+                conditions[0] = new Condition(split[0], split[1], Condition.ConditionType.EQUAL);
+            }
         }
         return conditions;
     }
@@ -57,11 +61,25 @@ public class DialogCSVConverter {
             String[] replyString = replyStrings.get(i);
             final String replyTextId = textId + "." + i;
             context.text.put(replyTextId, replyString[1]);
-            replies[i] = new Reply(replyString.length >= 5 ? Integer.parseInt(replyString[4]) : 0, Integer.parseInt(replyString[2]), Integer.toString(i), replyString.length > 3 ? parseConditions(replyString[3]) : null);
+            replies[i] = new Reply(
+                    replyString.length >= 5 && !replyString[4].isEmpty() ? Integer.parseInt(replyString[4]) : 0
+                    , Integer.parseInt(replyString[2])
+                    , Integer.toString(i)
+                    , replyString.length > 3 && !replyString[3].isEmpty() ? parseConditions(replyString[3]) : null
+                    , replyString.length >= 6 ? parseFlags(replyString[5]) : null);
         }
 
         context.text.put(textId, stmtStrings[1]);
+        if (replies.length == 0) {
+            throw new IllegalStateException("Empty reply list at line " + context.lineNumber);
+        }
         return new Statement(stmtId, stmtStrings.length > 2 ? stmtStrings[2] : null, null, replies);
+    }
+
+    private static Map<String, String> parseFlags(String s) {
+        Map<String, String> flags = new HashMap<>();
+        flags.put(s, "true");
+        return flags;
     }
 
     public static void main(String[] args) {
@@ -116,6 +134,7 @@ public class DialogCSVConverter {
                 } catch (Exception ex) {
                     System.err.println("Error parsing line " + context.lineNumber);
                     ex.printStackTrace();
+                    return;
                 }
 
             }
@@ -123,6 +142,13 @@ public class DialogCSVConverter {
             System.out.println("CSV parsed");
 
             Dialog dialog = new Dialog(args[1], args[2], statements);
+
+            System.out.println("Validating");
+
+            if (!DialogValidator.validate(dialog)) {
+                System.err.println("Validation failed, see log for details");
+                return;
+            }
 
             File outDir = new File(args[3]);
             if (!outDir.exists()) {

@@ -13,6 +13,7 @@ import ru.game.aurora.player.engineering.projects.CylindersCraft;
 import ru.game.aurora.player.engineering.projects.MedpacksCraft;
 import ru.game.aurora.player.research.ResearchState;
 import ru.game.aurora.world.Ship;
+import ru.game.aurora.world.World;
 import ru.game.aurora.world.equip.LandingPartyWeapon;
 import ru.game.aurora.world.planet.InventoryItem;
 import ru.game.aurora.world.planet.LandingParty;
@@ -22,9 +23,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player implements Serializable {
+public class Player implements Serializable
+{
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
 
     private Ship ship;
 
@@ -38,11 +40,14 @@ public class Player implements Serializable {
 
     private int resourceUnits = 5;
 
-    private int credits = 5;
+    private int credits = 0;
 
     private Journal journal = new Journal();
 
     private Map<InventoryItem, Integer> inventory = new HashMap<InventoryItem, Integer>();
+
+    // main country in Aurora project, defines some bonuses
+    private EarthCountry mainCountry = EarthCountry.AMERICA;
 
     /**
      * Number of times player has returned to Earth without enough research data
@@ -98,8 +103,9 @@ public class Player implements Serializable {
         return engineeringState;
     }
 
-    public void changeCredits(int delta) {
+    public void changeCredits(World world, int delta) {
         credits += delta;
+        world.getGlobalVariables().put("credits", credits);
     }
 
     public int getCredits() {
@@ -120,5 +126,13 @@ public class Player implements Serializable {
 
     public Journal getJournal() {
         return journal;
+    }
+
+    public EarthCountry getMainCountry() {
+        return mainCountry;
+    }
+
+    public void setMainCountry(EarthCountry mainCountry) {
+        this.mainCountry = mainCountry;
     }
 }

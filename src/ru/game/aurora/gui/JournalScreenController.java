@@ -48,10 +48,14 @@ public class JournalScreenController implements ScreenController
         myWindow.getElement().setVisible(true);
         Journal journal = world.getPlayer().getJournal();
         questList.clear();
-        questList.addAllItems(journal.getQuests());
+        for (JournalEntry e : journal.getQuests().values()) {
+            questList.addItem(e);
+        }
 
         codexList.clear();
-        codexList.addAllItems(journal.getCodex());
+        for (JournalEntry e : journal.getCodex().values()) {
+            codexList.addItem(e);
+        }
 
     }
 
@@ -66,7 +70,7 @@ public class JournalScreenController implements ScreenController
         if (event.getSelection().isEmpty()) {
             return;
         }
-        EngineUtils.setTextForGUIElement(tg.getSelectedTab().getElement().findElementByName("#message_text"), ((JournalEntry)event.getSelection().get(0)).getFullText());
+        EngineUtils.setTextForGUIElement(tg.getSelectedTab().getElement().findElementByName("#message_text"), ((JournalEntry)event.getSelection().get(0)).getFullText(world));
         myWindow.getElement().layoutElements();
     }
 

@@ -7,7 +7,7 @@ earth.special_dialog - path to file with special dialog. If this variable is set
 upon returning to Earth instead of a default one
 
 player.country - which country player has chosen as a primary contributor to Aurora project. Possible values: america asia europe
-
+credits - amount of credits player has
 
 ==============================
 Main quest:
@@ -20,6 +20,9 @@ quest.main.show_earth_dialog - when true, on return to earth player will be show
 quest.main.weapon_test_done - after player has performed a weapon test against Obliterator
 quest.main.evacuation_started - after evacuation from Earth has begun
 
+colony_search.klisk_coords - coordinates of an earth-like planet that Klisk can sell to a player
+colony_search.found - if suitable planet has been found
+last_beacon.coords - coordinates of a last-known aurora location
 ==============================
 Crew relationship
 
@@ -42,6 +45,15 @@ rogues.beacon_hostile - set if player failed to settle problem with rogues beaco
 Relations with Klisk
 
 quest.main.klisk_evacuation_help - Klisk are helping with evacuating Earth. Klisk ships will appear in solar system.
+
+klisk.discount - player has a one-time 10% discount
+klisk.coordinates_traded - after player has made an initial deal with the klisk
+
+klisk.planet_info - if klisk promised to give player a coordinates of an earth-like planet
+klisk.klisk_info - set if player has bought info for these races
+klisk.zorsan_info
+klisk.rogues_info
+klisk.bork_info
 
 ==============================
 

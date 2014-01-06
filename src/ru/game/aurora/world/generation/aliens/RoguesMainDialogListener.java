@@ -6,6 +6,8 @@ import ru.game.aurora.dialog.Dialog;
 import ru.game.aurora.dialog.DialogListener;
 import ru.game.aurora.world.World;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: User
@@ -16,16 +18,16 @@ public class RoguesMainDialogListener implements DialogListener {
     private static final long serialVersionUID = 7523069730734608685L;
 
     @Override
-    public void onDialogEnded(World world, Dialog dialog, int returnCode) {
+    public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
         if (returnCode == 100) {
             // pay fine
-            int fine = (int) world.getGlobalVariables().get("rogues.fine");
+            int fine = (Integer) world.getGlobalVariables().get("rogues.fine");
             if (world.getPlayer().getCredits() < fine) {
                 GameLogger.getInstance().logMessage(Localization.getText("gui", "logging.not_enough_credits"));
                 return;
             }
 
-            world.getPlayer().changeCredits(-fine);
+            world.getPlayer().changeCredits(world, -fine);
             world.getGlobalVariables().remove("rogues.fine");
         }
     }

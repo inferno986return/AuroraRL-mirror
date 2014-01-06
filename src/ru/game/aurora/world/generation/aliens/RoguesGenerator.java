@@ -22,6 +22,8 @@ import ru.game.aurora.world.space.HomeworldGenerator;
 import ru.game.aurora.world.space.NPCShip;
 import ru.game.aurora.world.space.StarSystem;
 
+import java.util.Map;
+
 public class RoguesGenerator implements WorldGeneratorPart {
     private static final long serialVersionUID = -8911801330633122269L;
 
@@ -50,7 +52,7 @@ public class RoguesGenerator implements WorldGeneratorPart {
             private static final long serialVersionUID = -1975417060573768272L;
 
             @Override
-            public void onDialogEnded(World world, Dialog dialog, int returnCode) {
+            public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
 
                 if (returnCode == 0) {
                     return;
@@ -74,7 +76,7 @@ public class RoguesGenerator implements WorldGeneratorPart {
                     world.getGlobalVariables().remove("rogues.damaged_scout_found");
                 } else {
                     // player decided to help for reward
-                    world.getPlayer().changeCredits(5);
+                    world.getPlayer().changeCredits(world, 5);
                     GameLogger.getInstance().logMessage(String.format(Localization.getText("gui", "logging.credits_received"), 5));
                     rogueRace.setRelation(world.getPlayer().getShip().getRace(), rogueRace.getRelation(world.getPlayer().getShip().getRace()) + 1);
                     world.getGlobalVariables().remove("rogues.damaged_scout_found");
@@ -103,11 +105,11 @@ public class RoguesGenerator implements WorldGeneratorPart {
         Dialog defaultDialog = Dialog.loadFromFile("dialogs/rogues/rogues_frame_dialog.json");
         defaultDialog.setListener(new RoguesMainDialogListener());
         AlienRace rogueRace = new AlienRace("Rogues", "rogues_scout", defaultDialog);
-        StarSystem homeworld = HomeworldGenerator.generateRoguesWorld(world, 15, 8, rogueRace);
+        StarSystem homeworld = HomeworldGenerator.generateRoguesWorld(world, 15, 28, rogueRace);
         homeworld.setQuestLocation(true);
         rogueRace.setHomeworld(homeworld);
 
-        world.getGalaxyMap().addObjectAndSetTile(homeworld, 15, 8);
+        world.getGalaxyMap().addObjectAndSetTile(homeworld, 15, 28);
         world.addListener(new StandardAlienShipEvent(rogueRace));
         world.addListener(new SingleStarsystemShipSpawner(rogueRace.getDefaultFactory(), 0.3, homeworld));
 
