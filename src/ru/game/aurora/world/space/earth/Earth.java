@@ -26,18 +26,22 @@ import ru.game.aurora.world.planet.PlanetAtmosphere;
 import ru.game.aurora.world.planet.PlanetCategory;
 import ru.game.aurora.world.space.StarSystem;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
 public class Earth extends Planet {
 
-    private static final long serialVersionUID = 3431652617342589266L;
+    private static final long serialVersionUID = 1L;
 
     private Dialog earthDialog;
 
     private Dialog progressDialog;
 
     private int lastVisitTurn = 0;
+
+    // flags used to control default earth dialog
+    private Map<String, String> dialogFlags = new HashMap<>();
 
     public Earth(World world, StarSystem owner, PlanetCategory cat, PlanetAtmosphere atmosphere, int size, int x, int y) {
         super(world, owner, cat, atmosphere, size, x, y);
@@ -49,6 +53,10 @@ public class Earth extends Planet {
 
     public Dialog getProgressDialog() {
         return progressDialog;
+    }
+
+    public Map<String, String> getDialogFlags() {
+        return dialogFlags;
     }
 
     @Override
@@ -84,7 +92,20 @@ public class Earth extends Planet {
         if (world.getGlobalVariables().containsKey("quest.main.show_earth_dialog")) {
             showObliteratorThreatDialog(world);
         } else {
-            world.addOverlayWindow(earthDialog);
+            addQuestFlags(world, dialogFlags);
+            world.addOverlayWindow(earthDialog, dialogFlags);
+        }
+    }
+
+    private void addQuestFlags(World world, Map<String, String> flags) {
+        // check for embassies quest
+        if (!world.getGlobalVariables().containsKey("diplomacy.all_done")
+                && world.getGlobalVariables().containsKey("diplomacy.klisk_visited")
+                && world.getGlobalVariables().containsKey("diplomacy.bork_visited")
+                && world.getGlobalVariables().containsKey("diplomacy.zorsan_visited")
+                && world.getGlobalVariables().containsKey("diplomacy.rogues_visited")
+                ) {
+            flags.put("diplomacy.all_done", "0");
         }
     }
 
