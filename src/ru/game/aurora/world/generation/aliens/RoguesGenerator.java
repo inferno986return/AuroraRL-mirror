@@ -17,6 +17,7 @@ import ru.game.aurora.npc.*;
 import ru.game.aurora.npc.shipai.LeaveSystemAI;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.WorldGeneratorPart;
+import ru.game.aurora.world.generation.quest.EmbassiesQuest;
 import ru.game.aurora.world.planet.BasePlanet;
 import ru.game.aurora.world.planet.Planet;
 import ru.game.aurora.world.planet.PlanetAtmosphere;
@@ -43,16 +44,18 @@ public class RoguesGenerator implements WorldGeneratorPart {
 
         Dialog frameDialog = Dialog.loadFromFile("dialogs/rogues/rogues_mothership_first_time.json");
         Dialog admiralDialog = Dialog.loadFromFile("dialogs/rogues/rogues_admiral_first.json");
-        frameDialog.setListener(new NextDialogListener(admiralDialog));
+        frameDialog.addListener(new NextDialogListener(admiralDialog));
 
 
-        admiralDialog.setListener(new DialogListener() {
+        admiralDialog.addListener(new DialogListener() {
             private static final long serialVersionUID = -1121310501064131337L;
 
             @Override
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
+                world.getGlobalVariables().put("diplomacy.rogues_visited", 0);
+                EmbassiesQuest.updateJournal(world, "rogues");
                 Dialog newFrameDefault = Dialog.loadFromFile("dialogs/rogues/rogues_admiral_default.json");
-                newFrameDefault.setListener(new RoguesMainDialogListener());
+                newFrameDefault.addListener(new RoguesMainDialogListener());
                 frame.setCaptain(new NPC(newFrameDefault));
 
                 world.addOverlayWindow(newFrameDefault);

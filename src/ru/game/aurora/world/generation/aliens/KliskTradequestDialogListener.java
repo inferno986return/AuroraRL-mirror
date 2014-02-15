@@ -31,14 +31,14 @@ public class KliskTradequestDialogListener extends GameEventListener implements 
         if (returnCode == 0) {
             // player refused to perform trading
             world.getGlobalVariables().put("klisk_trade.result", "refused");
+            world.getPlayer().getJournal().addQuestEntries("klisk_trade", "refused");
             return;
         }
 
         // now put player into target star system
 
         Dialog tradeDialog = Dialog.loadFromFile("dialogs/klisk/klisk_trade_quest_trade.json");
-        tradeDialog.setListener(this);
-
+        tradeDialog.addListener(this);
         world.addOverlayWindow(tradeDialog);
     }
 
@@ -64,7 +64,7 @@ public class KliskTradequestDialogListener extends GameEventListener implements 
             if (!ai.isAlive()) {
                 // docked
                 Dialog arrivalDialog = Dialog.loadFromFile("dialogs/klisk/klisk_trade_quest_arrival.json");
-                arrivalDialog.setListener(KliskTradequestDialogListener.this);
+                arrivalDialog.addListener(KliskTradequestDialogListener.this);
                 target.setCaptain(new NPC(arrivalDialog));
             }
         }
@@ -90,6 +90,7 @@ public class KliskTradequestDialogListener extends GameEventListener implements 
 
         if (returnCode == 1) {
             world.addOverlayWindow(Dialog.loadFromFile("dialogs/klisk/klisk_trade_quest_party.json"));
+            world.getPlayer().getJournal().addQuestEntries("klisk_trade", "party");
         }
     }
 
@@ -113,9 +114,10 @@ public class KliskTradequestDialogListener extends GameEventListener implements 
         if (returnCode == 0) {
             // player refused to perform trading
             world.getGlobalVariables().put("klisk_trade.result", "refused");
+            world.getPlayer().getJournal().addQuestEntries("klisk_trade", "refused");
             return;
         }
-
+        world.getPlayer().getJournal().addQuestEntries("klisk_trade", "traded");
         String result;
         if (flags.containsKey("first_good") && flags.containsKey("second_good") && flags.containsKey("third_good")) {
             result = "perfect";
@@ -143,7 +145,7 @@ public class KliskTradequestDialogListener extends GameEventListener implements 
         }
 
         Dialog d = Dialog.loadFromFile("dialogs/klisk/klisk_trade_quest_captain.json");
-        d.setListener(this);
+        d.addListener(this);
         world.addOverlayWindow(d);
         isAlive = false;
         return true;

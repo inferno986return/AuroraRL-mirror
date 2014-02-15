@@ -14,6 +14,7 @@ import ru.game.aurora.world.Dungeon;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.WorldGeneratorPart;
 import ru.game.aurora.world.generation.humanity.HumanityGenerator;
+import ru.game.aurora.world.generation.quest.EmbassiesQuest;
 import ru.game.aurora.world.planet.BasePlanet;
 import ru.game.aurora.world.planet.PlanetAtmosphere;
 import ru.game.aurora.world.planet.PlanetCategory;
@@ -63,7 +64,7 @@ public class ZorsanGenerator implements WorldGeneratorPart {
 
 
         planets[0] = new AlienHomeworld("zorsan_homeworld", race, initialHomeworldDialog, 3, 0, ss, PlanetAtmosphere.PASSIVE_ATMOSPHERE, 0, PlanetCategory.PLANET_ROCK);
-        initialHomeworldDialog.setListener(new DialogListener() {
+        initialHomeworldDialog.addListener(new DialogListener() {
 
             private static final long serialVersionUID = 5653727064261130921L;
 
@@ -71,13 +72,13 @@ public class ZorsanGenerator implements WorldGeneratorPart {
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
                 if (dialog == initialHomeworldDialog || dialog == continueDialog) {
                     if (returnCode == 0) {
-                        continueDialog.setListener(this);
+                        continueDialog.addListener(this);
                         ((AlienHomeworld) planets[0]).setDialog(continueDialog);
                     }
 
                     if (returnCode == 1) {
                         // descending to planet
-                        planetSightseeingDialog.setListener(this);
+                        planetSightseeingDialog.addListener(this);
                         world.addOverlayWindow(planetSightseeingDialog);
                     }
                 } else if (dialog == planetSightseeingDialog) {
@@ -88,6 +89,9 @@ public class ZorsanGenerator implements WorldGeneratorPart {
                     dungeon.setPlaylistName("dungeon_invasion");
                     dungeon.enter(world);
                     world.setCurrentRoom(dungeon);
+                    world.getGlobalVariables().put("zorsan.escape", 0);
+                    EmbassiesQuest.updateJournal(world, "zorsan");
+                    world.getGlobalVariables().put("diplomacy.zorsan_visited", 0);
 
                     zorsanFinalDialog.setFlags(dialog.getFlags()); // pass flags from previous dialog to a next one
                     world.getReputation().setHostile(race.getName(), HumanityGenerator.NAME);

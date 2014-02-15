@@ -11,6 +11,7 @@ import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.WorldGeneratorPart;
 import ru.game.aurora.world.generation.humanity.HumanityGenerator;
 import ru.game.aurora.world.generation.quest.EarthInvasionGenerator;
+import ru.game.aurora.world.generation.quest.EmbassiesQuest;
 import ru.game.aurora.world.planet.*;
 import ru.game.aurora.world.space.*;
 
@@ -34,10 +35,10 @@ public class BorkGenerator implements WorldGeneratorPart {
         Dialog landDialog = Dialog.loadFromFile("dialogs/bork/bork_planet_land.json");
         Dialog transferDialog = Dialog.loadFromFile("dialogs/bork/bork_planet_transfer.json");
         Dialog testDialog = Dialog.loadFromFile("dialogs/bork/bork_embassy_test.json");
-        landDialog.setListener(new NextDialogListener(transferDialog));
-        transferDialog.setListener(new NextDialogListener(testDialog));
+        landDialog.addListener(new NextDialogListener(transferDialog));
+        transferDialog.addListener(new NextDialogListener(testDialog));
 
-        testDialog.setListener(new DialogListener() {
+        testDialog.addListener(new DialogListener() {
 
             private static final long serialVersionUID = 6603409563932739582L;
 
@@ -45,26 +46,32 @@ public class BorkGenerator implements WorldGeneratorPart {
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
                 Dialog nextDialog;
                 AlienRace humanity = world.getRaces().get(HumanityGenerator.NAME);
+                String variableValue;
                 switch (returnCode) {
                     case 1:
+                        variableValue = "kill";
                         world.getReputation().updateReputation(borkRace.getName(), humanity.getName(), 1);
                         nextDialog = Dialog.loadFromFile("dialogs/bork/bork_embassy_test_kill.json");
                         break;
                     case 2:
+                        variableValue = "injure";
                         world.getReputation().setReputation(borkRace.getName(), humanity.getName(), 8);
                         nextDialog = Dialog.loadFromFile("dialogs/bork/bork_embassy_test_injure.json");
                         break;
                     case 3:
+                        variableValue = "miss";
                         nextDialog = Dialog.loadFromFile("dialogs/bork/bork_embassy_test_miss.json");
                         break;
                     default:
                         throw new IllegalStateException("Unknown bork dialog return value " + returnCode);
                 }
-
+                EmbassiesQuest.updateJournal(world, "bork_" + variableValue);
+                world.getGlobalVariables().put("bork.diplomacy_test", variableValue);
+                world.getGlobalVariables().put("diplomacy.bork_visited", 0);
                 world.addOverlayWindow(nextDialog);
                 nextDialog.setFlags(flags);
 
-                nextDialog.setListener(new DialogListener() {
+                nextDialog.addListener(new DialogListener() {
                     private static final long serialVersionUID = 8232477058890497167L;
 
                     @Override

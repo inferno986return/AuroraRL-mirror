@@ -142,7 +142,7 @@ public class InitialRadioEmissionQuestGenerator implements WorldGeneratorPart {
         @Override
         public boolean onPlayerEnteredDungeon(World world, Dungeon dungeon) {
             if (dungeon == beacon) {
-                turns = 100;
+                turns = 500;
             }
             return false;
         }
@@ -162,7 +162,7 @@ public class InitialRadioEmissionQuestGenerator implements WorldGeneratorPart {
             if (turns == 60 && fine < 0) {
                 // change rogues default dialog
                 Dialog d = Dialog.loadFromFile("dialogs/rogues/search_beacon_attackers.json");
-                d.setListener(this);
+                d.addListener(this);
                 world.getRaces().get("Rogues").setDefaultDialog(d);
                 return true;
             }
@@ -187,7 +187,7 @@ public class InitialRadioEmissionQuestGenerator implements WorldGeneratorPart {
                             ss.getShips().add(defenceProbe);
 
                             Dialog dialog = Dialog.loadFromFile("dialogs/rogues/court_invitation.json");
-                            dialog.setListener(RoguesStateChanger.this);
+                            dialog.addListener(RoguesStateChanger.this);
                             world.addOverlayWindow(dialog);
                             return true;
                         }
@@ -222,7 +222,7 @@ public class InitialRadioEmissionQuestGenerator implements WorldGeneratorPart {
                         roguesBase.enter(world);
                         world.getPlayer().getShip().setPos(roguesFrame.getX() + 1, roguesFrame.getY());
                         Dialog admiralCourtDialog = Dialog.loadFromFile("dialogs/rogues/admiral_court.json");
-                        admiralCourtDialog.setListener(this);
+                        admiralCourtDialog.addListener(this);
                         world.addOverlayWindow(admiralCourtDialog);
                         break;
                 }
@@ -231,7 +231,7 @@ public class InitialRadioEmissionQuestGenerator implements WorldGeneratorPart {
                 world.getGlobalVariables().put("rogues.fine", fine);
                 turns = 360;
                 Dialog defaultDialog = Dialog.loadFromFile("dialogs/rogues/rogues_frame_dialog.json");
-                defaultDialog.setListener(new RoguesMainDialogListener());
+                defaultDialog.addListener(new RoguesMainDialogListener());
                 world.getRaces().get("Rogues").setDefaultDialog(defaultDialog);
                 roguesFrame.setCaptain(new NPC(defaultDialog));
             }
@@ -265,8 +265,24 @@ public class InitialRadioEmissionQuestGenerator implements WorldGeneratorPart {
         brownStar.setFirstEnterDialog(Dialog.loadFromFile(getClass().getClassLoader().getResourceAsStream("dialogs/rogues/rogue_beacon_found.json")));
 
         Dungeon beaconInternals = new Dungeon(world, new AuroraTiledMap("resources/maps/test.tmx"), brownStar);
+        beaconInternals.getController().setSuccessListener(new IStateChangeListener() {
+            private static final long serialVersionUID = 4018207362752529165L;
+
+            @Override
+            public void stateChanged(World world) {
+                world.getGlobalVariables().put("rogues_beacon.result", "invaded");
+            }
+        });
         beaconInternals.setPlaylistName("dungeon_invasion");
-        beaconInternals.setEnterDialog(Dialog.loadFromFile("dialogs/rogues/rogue_beacon_landing.json"));
+        final Dialog enterDialog = Dialog.loadFromFile("dialogs/rogues/rogues_beacon_landing.json");
+        enterDialog.addListener(new DialogListener() {
+            private static final long serialVersionUID = -6585091322276759341L;
+            @Override
+            public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
+                world.getGlobalVariables().put("rogues_beacon.result", "scanned");
+            }
+        });
+        beaconInternals.setEnterDialog(enterDialog);
         beaconInternals.setSuccessDialog(Dialog.loadFromFile("dialogs/rogues/rogues_beacon_explored.json"));
         SpaceHulk beacon = new SpaceHulk(1, 1, "Beacon", "rogues_beacon", beaconInternals);
         beacon.setResearchProjectDescs(world.getResearchAndDevelopmentProjects().getResearchProjects().get("beacon"));

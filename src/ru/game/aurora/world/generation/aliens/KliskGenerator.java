@@ -22,6 +22,7 @@ import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.WorldGenerator;
 import ru.game.aurora.world.generation.WorldGeneratorPart;
 import ru.game.aurora.world.generation.humanity.HumanityGenerator;
+import ru.game.aurora.world.generation.quest.EmbassiesQuest;
 import ru.game.aurora.world.planet.*;
 import ru.game.aurora.world.space.*;
 
@@ -46,7 +47,7 @@ public class KliskGenerator implements WorldGeneratorPart {
 
     private Dialog createDefaultKliskPlanetDialog(World world) {
         Dialog d = Dialog.loadFromFile("dialogs/klisk/klisk_planet_default.json");
-        d.setListener(new DialogListener() {
+        d.addListener(new DialogListener() {
             private static final long serialVersionUID = 4082728827280648178L;
 
             @Override
@@ -61,7 +62,8 @@ public class KliskGenerator implements WorldGeneratorPart {
 
                 if (world.getGlobalVariables().containsKey("klisk_trade.result")) {
                     int repDelta = 0;
-                    switch ((String) world.getGlobalVariables().get("klisk_trade.result")) {
+                    final String tradeResult = (String) world.getGlobalVariables().get("klisk_trade.result");
+                    switch (tradeResult) {
                         case "perfect":
                             repDelta = 2;
                             break;
@@ -72,7 +74,7 @@ public class KliskGenerator implements WorldGeneratorPart {
                             repDelta = -1;
                             break;
                     }
-
+                    EmbassiesQuest.updateJournal(world, "klisk_" + tradeResult);
                     world.getReputation().updateReputation(KliskGenerator.NAME, HumanityGenerator.NAME, repDelta);
                     world.getGlobalVariables().remove("klisk_trade.result");
                 }
@@ -90,7 +92,7 @@ public class KliskGenerator implements WorldGeneratorPart {
         ship.setAi(new LeaveSystemAI());
         ship.setPos(kliskPlanet.getX() - 1, kliskPlanet.getY() + 1);
         world.getCurrentStarSystem().getShips().add(ship);
-
+        world.getPlayer().getJournal().addQuestEntries("klisk_trade", "start");
         world.addListener(new KliskTradequestDialogListener(targetSystem));
     }
 
@@ -111,12 +113,13 @@ public class KliskGenerator implements WorldGeneratorPart {
         Dialog startDialog = Dialog.loadFromFile("dialogs/klisk/klisk_station_start.json");
 
         Dialog ambassadorDialog = Dialog.loadFromFile("dialogs/klisk/klisk_station_main.json");
-        startDialog.setListener(new NextDialogListener(ambassadorDialog));
-        ambassadorDialog.setListener(new DialogListener() {
+        startDialog.addListener(new NextDialogListener(ambassadorDialog));
+        ambassadorDialog.addListener(new DialogListener() {
             private static final long serialVersionUID = 4082728827280648178L;
 
             @Override
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
+                world.getGlobalVariables().put("diplomacy.klisk_visited", 0);
                 if (returnCode == 0) {
                     // no quest
                     world.getReputation().updateReputation(KliskGenerator.NAME, HumanityGenerator.NAME, -1);
@@ -164,7 +167,7 @@ public class KliskGenerator implements WorldGeneratorPart {
     public void updateWorld(World world) {
         Dialog mainDialog = Dialog.loadFromFile("dialogs/klisk_1.json");
         kliskRace = new AlienRace(NAME, "klisk_ship", mainDialog);
-        mainDialog.setListener(new DialogListener() {
+        mainDialog.addListener(new DialogListener() {
             @Override
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
 
@@ -183,7 +186,7 @@ public class KliskGenerator implements WorldGeneratorPart {
                 }
 
                 Dialog newDefaultDialog = Dialog.loadFromFile("dialogs/klisk_main.json");
-                newDefaultDialog.setListener(new KliskMainDialogListener(kliskRace));
+                newDefaultDialog.addListener(new KliskMainDialogListener(kliskRace));
                 kliskRace.setDefaultDialog(newDefaultDialog);
             }
         });

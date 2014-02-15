@@ -26,12 +26,13 @@ import ru.game.aurora.world.planet.PlanetAtmosphere;
 import ru.game.aurora.world.planet.PlanetCategory;
 import ru.game.aurora.world.space.StarSystem;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
 public class Earth extends Planet {
 
-    private static final long serialVersionUID = 3431652617342589266L;
+    private static final long serialVersionUID = 1L;
 
     private Dialog earthDialog;
 
@@ -39,16 +40,23 @@ public class Earth extends Planet {
 
     private int lastVisitTurn = 0;
 
+    // flags used to control default earth dialog
+    private Map<String, String> dialogFlags = new HashMap<>();
+
     public Earth(World world, StarSystem owner, PlanetCategory cat, PlanetAtmosphere atmosphere, int size, int x, int y) {
         super(world, owner, cat, atmosphere, size, x, y);
         earthDialog = Dialog.loadFromFile(Earth.class.getClassLoader().getResourceAsStream("dialogs/earth_dialog.json"));
         progressDialog = Dialog.loadFromFile(Earth.class.getClassLoader().getResourceAsStream("dialogs/earth_progress_dialog.json"));
-        progressDialog.setListener(new EarthProgressDialogListener(this));
-        earthDialog.setListener(new EarthDialogListener(this));
+        progressDialog.addListener(new EarthProgressDialogListener(this));
+        earthDialog.addListener(new EarthDialogListener(this));
     }
 
     public Dialog getProgressDialog() {
         return progressDialog;
+    }
+
+    public Map<String, String> getDialogFlags() {
+        return dialogFlags;
     }
 
     @Override
@@ -84,7 +92,20 @@ public class Earth extends Planet {
         if (world.getGlobalVariables().containsKey("quest.main.show_earth_dialog")) {
             showObliteratorThreatDialog(world);
         } else {
-            world.addOverlayWindow(earthDialog);
+            addQuestFlags(world, dialogFlags);
+            world.addOverlayWindow(earthDialog, dialogFlags);
+        }
+    }
+
+    private void addQuestFlags(World world, Map<String, String> flags) {
+        // check for embassies quest
+        if (!world.getGlobalVariables().containsKey("diplomacy.all_done")
+                && world.getGlobalVariables().containsKey("diplomacy.klisk_visited")
+                && world.getGlobalVariables().containsKey("diplomacy.bork_visited")
+                && world.getGlobalVariables().containsKey("diplomacy.zorsan_visited")
+                && world.getGlobalVariables().containsKey("diplomacy.rogues_visited")
+                ) {
+            flags.put("diplomacy.all_done", "0");
         }
     }
 
@@ -92,7 +113,7 @@ public class Earth extends Planet {
         world.addOverlayWindow(Dialog.loadFromFile("dialogs/quest/main/earth_obliterator_warning_1.json"));
         world.addOverlayWindow(new StoryScreen("story/obliterator.json"));
         Dialog last = Dialog.loadFromFile("dialogs/quest/main/earth_obliterator_warning_2.json");
-        last.setListener(new DialogListener() {
+        last.addListener(new DialogListener() {
 
             private static final long serialVersionUID = -374777902752182404L;
 
