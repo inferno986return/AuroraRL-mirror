@@ -10,10 +10,7 @@ import ru.game.aurora.npc.NPCShipFactory;
 import ru.game.aurora.npc.SingleStarsystemShipSpawner;
 import ru.game.aurora.npc.StandardAlienShipEvent;
 import ru.game.aurora.util.ProbabilitySet;
-import ru.game.aurora.world.AuroraTiledMap;
-import ru.game.aurora.world.Dungeon;
-import ru.game.aurora.world.Positionable;
-import ru.game.aurora.world.World;
+import ru.game.aurora.world.*;
 import ru.game.aurora.world.generation.WorldGeneratorPart;
 import ru.game.aurora.world.generation.aliens.KliskGenerator;
 import ru.game.aurora.world.generation.aliens.RoguesGenerator;
@@ -21,6 +18,7 @@ import ru.game.aurora.world.generation.aliens.bork.BorkGenerator;
 import ru.game.aurora.world.generation.humanity.HumanityGenerator;
 import ru.game.aurora.world.generation.quest.EmbassiesQuest;
 import ru.game.aurora.world.planet.BasePlanet;
+import ru.game.aurora.world.planet.LandingParty;
 import ru.game.aurora.world.planet.PlanetAtmosphere;
 import ru.game.aurora.world.planet.PlanetCategory;
 import ru.game.aurora.world.space.*;
@@ -87,6 +85,17 @@ public class ZorsanGenerator implements WorldGeneratorPart {
                         world.addOverlayWindow(planetSightseeingDialog);
                     }
                 } else if (dialog == planetSightseeingDialog) {
+
+                    // set as much marines as possible in a landing party
+                    LandingParty party = world.getPlayer().getLandingParty();
+
+                    Ship ship = world.getPlayer().getShip();
+                    if (party.getTotalMembers() < 10) {
+                        final int marineCount = Math.min(ship.getMilitary(), 10 - party.getTotalMembers());
+                        party.setMilitary(party.getMilitary() + marineCount);
+                        ship.setMilitary(ship.getMilitary() - marineCount);
+                    }
+
                     Dungeon dungeon = new Dungeon(world, new AuroraTiledMap("maps/zor_escape.tmx"), ss);
                     dungeon.setEnterDialog(zorsanFinalDialog);
                     dungeon.setSuccessDialog(escapeDialog);
@@ -100,7 +109,7 @@ public class ZorsanGenerator implements WorldGeneratorPart {
 
                     zorsanFinalDialog.setFlags(dialog.getFlags()); // pass flags from previous dialog to a next one
                     world.getReputation().setHostile(race.getName(), HumanityGenerator.NAME);
-
+                    world.getCurrentStarSystem().getReputation().setHostile(race.getName(), HumanityGenerator.NAME);
                     // after this, zorsan become hostile and player has fixed amount of time before they attack earth
                     addWarDataDrop();
                 }

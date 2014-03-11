@@ -17,8 +17,7 @@ import ru.game.aurora.world.quest.JournalEntry;
  * Date: 19.12.13
  */
 
-public class JournalScreenController implements ScreenController
-{
+public class JournalScreenController implements ScreenController {
     private ListBox<JournalEntry> questList;
 
     private ListBox<JournalEntry> codexList;
@@ -57,25 +56,37 @@ public class JournalScreenController implements ScreenController
             codexList.addItem(e);
         }
 
+        selectFirstItemInCurrentList();
+        world.setPaused(true);
+    }
+
+    private void selectFirstItemInCurrentList() {
+        ListBox currentTabList = tg.getSelectedTab().getElement().findNiftyControl("#itemsList", ListBox.class);
+        if (currentTabList.getSelectedIndices().isEmpty()) {
+            currentTabList.selectItemByIndex(0);
+        }
     }
 
     @Override
     public void onEndScreen() {
+        world.setPaused(false);
+    }
 
+    @NiftyEventSubscriber(id = "journal_tabs")
+    public void onTabChanged(final String id, final TabSelectedEvent event) {
+        selectFirstItemInCurrentList();
     }
 
     @NiftyEventSubscriber(pattern = ".*itemsList")
-    public void onItemClicked(final String id, final ListBoxSelectionChangedEvent event)
-    {
+    public void onItemClicked(final String id, final ListBoxSelectionChangedEvent event) {
         if (event.getSelection().isEmpty()) {
             return;
         }
-        EngineUtils.setTextForGUIElement(tg.getSelectedTab().getElement().findElementByName("#message_text"), ((JournalEntry)event.getSelection().get(0)).getFullText(world));
+        EngineUtils.setTextForGUIElement(tg.getSelectedTab().getElement().findElementByName("#message_text"), ((JournalEntry) event.getSelection().get(0)).getFullText(world));
         myWindow.getElement().layoutElements();
     }
 
-    public void closeScreen()
-    {
+    public void closeScreen() {
         GUI.getInstance().popAndSetScreen();
     }
 

@@ -9,6 +9,7 @@ import ru.game.aurora.world.Positionable;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.WorldGenerator;
 import ru.game.aurora.world.generation.WorldGeneratorPart;
+import ru.game.aurora.world.generation.aliens.KliskGenerator;
 import ru.game.aurora.world.space.GardenersShip;
 import ru.game.aurora.world.space.NPCShip;
 import ru.game.aurora.world.space.StarSystem;
@@ -37,18 +38,8 @@ public class LastBeaconQuestGenerator implements WorldGeneratorPart {
 
             @Override
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
-
-                Dialog secondDialog = Dialog.loadFromFile("dialogs/gardener_2.json");
-                secondDialog.addListener(new DialogListener() {
-                    private static final long serialVersionUID = -1475155421006956885L;
-
-                    @Override
-                    public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
-                        gardenerShip.warpAwayNextTurn();
-                        world.getPlayer().getJournal().getQuests().get("last_beacon").addMessage("gardener");
-                    }
-                });
-                gardenerShip.setCaptain(new NPC(secondDialog));
+                gardenerShip.warpAwayNextTurn();
+                world.getPlayer().getJournal().getQuests().get("last_beacon").addMessage("gardener");
             }
         });
         gardenerShip.setCaptain(new NPC(dialog));
@@ -58,9 +49,7 @@ public class LastBeaconQuestGenerator implements WorldGeneratorPart {
 
 
         AlienRace kliskRace = world.getRaces().get("Klisk");
-        NPCShip kliskShip = kliskRace.getDefaultFactory().createShip(0);
-        kliskShip.setSprite("klisk_station");
-        kliskShip.setStationary(true);
+        NPCShip kliskShip = kliskRace.getDefaultFactory().createShip(KliskGenerator.STATION);
         lastBeaconLocation.setRandomEmptyPosition(kliskShip);
         lastBeaconLocation.getShips().add(kliskShip);
 

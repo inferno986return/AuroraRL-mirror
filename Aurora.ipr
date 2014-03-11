@@ -639,9 +639,6 @@
     </profiles>
     <list size="0" />
   </component>
-  <component name="AntConfiguration">
-    <defaultAnt bundledAnt="true" />
-  </component>
   <component name="ArtifactManager">
     <artifact type="jar" name="Aurora:jar">
       <output-path>$PROJECT_DIR$/out/artifacts/Aurora_jar</output-path>
