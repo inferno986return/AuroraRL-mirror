@@ -8,10 +8,8 @@ package ru.game.aurora.world.space;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import ru.game.aurora.application.Camera;
-import ru.game.aurora.application.CommonRandom;
-import ru.game.aurora.application.GameLogger;
-import ru.game.aurora.application.Localization;
+import org.newdawn.slick.Image;
+import ru.game.aurora.application.*;
 import ru.game.aurora.dialog.Dialog;
 import ru.game.aurora.effects.BlasterShotEffect;
 import ru.game.aurora.effects.Effect;
@@ -221,11 +219,12 @@ public class NPCShip extends MovableSprite implements SpaceObject {
 
     @Override
     public void onContact(World world) {
-        if (!canBeHailed || isHostile) {
+        if (!isCanBeHailed() || isHostile) {
             GameLogger.getInstance().logMessage(Localization.getText("gui", "space.hail_not_responded"));
             return;
         }
 
+        world.onPlayerContactedAlienShip(this);
         final Dialog d = captain != null ? captain.getCustomDialog() : race.getDefaultDialog();
 
         if (race != null && race.getMusic() != null && !race.getMusic().isPlaying()) {
@@ -241,14 +240,7 @@ public class NPCShip extends MovableSprite implements SpaceObject {
         hp -= dmg;
         final StarSystem currentStarSystem = world.getCurrentStarSystem();
         if (hp <= 0) {
-            GameLogger.getInstance().logMessage(getName() + " " + Localization.getText("gui", "space.destroyed"));
-            currentStarSystem.addEffect(new ExplosionEffect(x, y, "ship_explosion", false, true));
-
-            if (loot != null) {
-                if (CommonRandom.getRandom().nextBoolean()) {
-                    currentStarSystem.getShips().add(new SpaceDebris(x, y, loot));
-                }
-            }
+            explode(currentStarSystem);
         }
 
 
@@ -257,6 +249,18 @@ public class NPCShip extends MovableSprite implements SpaceObject {
 
             if (race != null && !currentStarSystem.getReputation().isHostile(race.getName(), attacker.getRace().getName())) {
                 currentStarSystem.getReputation().setHostile(race.getName(), attacker.getRace().getName());
+            }
+        }
+    }
+
+    public void explode(StarSystem currentStarSystem) {
+        hp = 0;
+        GameLogger.getInstance().logMessage(getName() + " " + Localization.getText("gui", "space.destroyed"));
+        currentStarSystem.addEffect(new ExplosionEffect(x, y, "ship_explosion", false, true));
+
+        if (loot != null) {
+            if (CommonRandom.getRandom().nextBoolean()) {
+                currentStarSystem.getShips().add(new SpaceDebris(x, y, loot));
             }
         }
     }
@@ -288,7 +292,7 @@ public class NPCShip extends MovableSprite implements SpaceObject {
 
 
         Effect e = new BlasterShotEffect(this, target, world.getCamera(), 800, weapons[weaponIdx]);
-        e.setEndListener(new IStateChangeListener() {
+        e.setEndListener(new IStateChangeListener<World>() {
             private static final long serialVersionUID = -3379281638297845046L;
 
             @Override
@@ -462,5 +466,10 @@ public class NPCShip extends MovableSprite implements SpaceObject {
 
     public void setRace(AlienRace race) {
         this.race = race;
+    }
+
+    @Override
+    public Image getImage() {
+        return ResourceManager.getInstance().getImage(sprite);
     }
 }

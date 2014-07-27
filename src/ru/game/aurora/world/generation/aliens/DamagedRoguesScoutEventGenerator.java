@@ -146,19 +146,14 @@ public class DamagedRoguesScoutEventGenerator implements WorldGeneratorPart {
             public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
 
                 if (dialog == initialDialog) {
-                    if (returnCode == 0) {
-                        return;
-                    }
-
                     if (returnCode == 1) {
                         saveByResources(world);
-                    }
-
-                    if (returnCode == 2) {
+                    } else if (returnCode == 2) {
                         saveByShuttle(world);
+                    } else {
+                        world.getGlobalVariables().put("rogues.damaged_scout_found", world.getCurrentStarSystem());
                     }
-
-                    world.getGlobalVariables().put("rogues.damaged_scout_found", world.getCurrentStarSystem());
+                    return;
                 }
 
                 if (dialog == saveByResourceDialog) {
@@ -184,7 +179,7 @@ public class DamagedRoguesScoutEventGenerator implements WorldGeneratorPart {
                     // successfully saved
                     world.addOverlayWindow(Dialog.loadFromFile("dialogs/rogues/rogues_damaged_scout_shuttle.json"));
                     final ResearchProjectDesc captured_rogues = world.getResearchAndDevelopmentProjects().getResearchProjects().get("captured_rogues");
-                    captured_rogues.addListener(new IStateChangeListener() {
+                    captured_rogues.addListener(new IStateChangeListener<World>() {
                         private static final long serialVersionUID = 1125234617698299511L;
 
                         @Override

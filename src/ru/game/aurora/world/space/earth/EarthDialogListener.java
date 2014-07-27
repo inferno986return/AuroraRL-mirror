@@ -40,7 +40,6 @@ public class EarthDialogListener implements DialogListener {
     @Override
     public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
 
-        earth.getDialogFlags().putAll(flags);
         if (returnCode == 1) {
             // player has chosen to dump research info
 
@@ -147,19 +146,23 @@ public class EarthDialogListener implements DialogListener {
         if (flags.containsKey("diplomacy_report")) {
             // player has reported results of diplomacy quest
             world.getGlobalVariables().put("diplomacy.all_done", 1);
+            flags.remove("diplomacy_report");
         }
 
         if (flags.containsKey("zorsan_war_info_quest")) {
             world.getGlobalVariables().put("zorsan.escape", 1);
             world.getPlayer().getJournal().addQuestEntries("zorsan_relations", "earth_report");
+            flags.remove("zorsan_war_info_quest");
         }
 
         if (flags.containsKey("colony_info_dumped")) {
             world.getGlobalVariables().remove("colony_search.explored");
             world.addListener(new ColonizationListener(world));
+            flags.remove("colony_info_dumped");
         }
 
         if (flags.containsKey("zorsan_war_info_update")) {
+            flags.remove("zorsan_war_info_update");
             world.getGlobalVariables().put("zorsan.war_preparations", 1);
             world.getGlobalVariables().put("zorsan.escape", 1);
             world.getPlayer().getEarthState().getMessages().add(new PrivateMessage("zorsan_attack_1", "news"));
@@ -180,7 +183,7 @@ public class EarthDialogListener implements DialogListener {
             });
         }
 
-
+        earth.getDialogFlags().putAll(flags);
         //reset dialog state
         earth.getEarthDialog().enter(world);
         world.getPlayer().getShip().fullRepair(world);

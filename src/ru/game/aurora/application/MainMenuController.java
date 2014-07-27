@@ -97,7 +97,7 @@ public class MainMenuController implements ScreenController, ResolutionChangeLis
             IntroDialogController introDialogController = (IntroDialogController) GUI.getInstance().getNifty().findScreenController(IntroDialogController.class.getName());
             introDialogController.pushDialog(dialog);
             introDialogController.pushDialog(IntroDialog.load("story/intro_1.json"));
-            introDialogController.setEndListener(new IStateChangeListener() {
+            introDialogController.setEndListener(new IStateChangeListener<World>() {
 
                 private static final long serialVersionUID = -167349630557155374L;
 
@@ -275,8 +275,11 @@ public class MainMenuController implements ScreenController, ResolutionChangeLis
         background = new MainMenuBackground(AuroraGame.tilesX * AuroraGame.tileSize, AuroraGame.tilesY * AuroraGame.tileSize);
         boolean saveAvailable = SaveGameManager.isSaveAvailable();
 
+        final Element loadGameButton = GUI.getInstance().getNifty().getCurrentScreen().findElementByName("panel").findElementByName("continue_game_button");
         if (!saveAvailable) {
-            GUI.getInstance().getNifty().getCurrentScreen().findElementByName("panel").findElementByName("continue_game_button").disable();
+            loadGameButton.disable();
+        } else {
+            loadGameButton.enable();
         }
     }
 

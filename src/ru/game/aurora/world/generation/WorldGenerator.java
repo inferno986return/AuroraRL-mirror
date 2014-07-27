@@ -19,6 +19,7 @@ import ru.game.aurora.world.CrewChangeListener;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.aliens.*;
 import ru.game.aurora.world.generation.aliens.bork.BorkGenerator;
+import ru.game.aurora.world.generation.aliens.bork.FamilyProblemsEventGenerator;
 import ru.game.aurora.world.generation.aliens.zorsan.ZorsanGenerator;
 import ru.game.aurora.world.generation.aliens.zorsan.ZorsanRebelsFirstQuestGenerator;
 import ru.game.aurora.world.generation.artifacts.BuildersRuinGenerator;
@@ -63,6 +64,7 @@ public class WorldGenerator implements Runnable {
             , new EnergySphereEncounterGenerator()
             , new ZorsanRebelsFirstQuestGenerator()
             , new FasterThanLightQuestGenerator()
+            , new FamilyProblemsEventGenerator()
     };
 
     private static final WorldGeneratorPart[] alienGenerators = {
@@ -257,8 +259,6 @@ public class WorldGenerator implements Runnable {
         journal.addQuest(new JournalEntry("last_beacon", "start"));
 
         world.addListener(new EarthUpgradeUnlocker());
-
-
     }
 
     // perform some fast initialization in gui thread
