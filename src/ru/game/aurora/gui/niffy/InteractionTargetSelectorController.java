@@ -8,10 +8,7 @@ package ru.game.aurora.gui.niffy;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
-import de.lessvoid.nifty.controls.ButtonClickedEvent;
-import de.lessvoid.nifty.controls.Controller;
-import de.lessvoid.nifty.controls.ListBox;
-import de.lessvoid.nifty.controls.WindowClosedEvent;
+import de.lessvoid.nifty.controls.*;
 import de.lessvoid.nifty.controls.window.WindowControl;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.input.NiftyInputEvent;
@@ -21,6 +18,7 @@ import ru.game.aurora.gui.GUI;
 import ru.game.aurora.world.GameObject;
 import ru.game.aurora.world.IStateChangeListener;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Properties;
 
@@ -52,14 +50,17 @@ public class InteractionTargetSelectorController implements Controller {
     }
 
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element, Properties parameter, Attributes controlDefinitionAttributes) {
+    public void bind(@Nonnull Nifty nifty,
+                     @Nonnull Screen screen,
+                     @Nonnull Element element,
+                     @Nonnull Parameters parameter) {
         myWindow = element.findControl("#target_selection_window", WindowControl.class).getElement();
         listBox = element.findNiftyControl("#objects", ListBox.class);
 
     }
 
     @Override
-    public void init(Properties parameter, Attributes controlDefinitionAttributes) {
+    public void init(@Nonnull Parameters parameter) {
     }
 
     @Override
@@ -73,7 +74,7 @@ public class InteractionTargetSelectorController implements Controller {
     }
 
     @Override
-    public boolean inputEvent(NiftyInputEvent inputEvent) {
+    public boolean inputEvent(@Nonnull NiftyInputEvent inputEvent) {
         return false;
     }
 

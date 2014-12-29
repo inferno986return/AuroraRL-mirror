@@ -2,13 +2,13 @@ package ru.game.aurora.gui;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.Parameters;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.xml.xpp3.Attributes;
 import ru.game.aurora.application.AuroraGame;
 
-import java.util.Properties;
+import javax.annotation.Nonnull;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,11 +18,11 @@ import java.util.Properties;
  */
 public class IngameMenuController implements Controller {
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element, Properties parameter, Attributes controlDefinitionAttributes) {
+    public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element,  @Nonnull Parameters parameters) {
     }
 
     @Override
-    public void init(Properties parameter, Attributes controlDefinitionAttributes) {
+    public void init( @Nonnull Parameters parameters) {
     }
 
     @Override
@@ -34,7 +34,7 @@ public class IngameMenuController implements Controller {
     }
 
     @Override
-    public boolean inputEvent(NiftyInputEvent inputEvent) {
+    public boolean inputEvent(@Nonnull NiftyInputEvent inputEvent) {
         return true;
     }
 

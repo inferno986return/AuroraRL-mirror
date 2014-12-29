@@ -8,12 +8,14 @@ package ru.game.aurora.gui.niffy;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.Parameters;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.xml.xpp3.Attributes;
 import ru.game.aurora.util.EngineUtils;
 
+import javax.annotation.Nonnull;
 import java.util.Properties;
 
 
@@ -27,7 +29,7 @@ public class TopPanelController implements Controller {
     private Element milCountElement;
 
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element, Properties parameter, Attributes controlDefinitionAttributes) {
+    public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element, @Nonnull Parameters parameters) {
         progressBarControl = element.findControl("progressbar", ProgressBarControl.class);
         sciCountElement = element.findElementByName("sci_count").findElementByName("#count");
         engiCountElement = element.findElementByName("engi_count").findElementByName("#count");
@@ -35,7 +37,7 @@ public class TopPanelController implements Controller {
     }
 
     @Override
-    public void init(Properties parameter, Attributes controlDefinitionAttributes) {
+    public void init(@Nonnull Parameters parameters) {
     }
 
     @Override
@@ -47,7 +49,7 @@ public class TopPanelController implements Controller {
     }
 
     @Override
-    public boolean inputEvent(NiftyInputEvent inputEvent) {
+    public boolean inputEvent(@Nonnull NiftyInputEvent inputEvent) {
         return false;
     }
 

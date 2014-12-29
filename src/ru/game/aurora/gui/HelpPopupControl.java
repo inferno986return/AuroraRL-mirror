@@ -9,6 +9,7 @@ import de.lessvoid.xml.xpp3.Attributes;
 import ru.game.aurora.application.Localization;
 import ru.game.aurora.util.EngineUtils;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class HelpPopupControl implements Controller {
@@ -64,7 +65,7 @@ public class HelpPopupControl implements Controller {
     }
 
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element, Properties properties, Attributes attributes) {
+    public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element,  @Nonnull Parameters parameters) {
         textElement = element.findElementByName("helpText");
         skipHelp = element.findNiftyControl("skipHelp", CheckBox.class);
         prevButton = element.findNiftyControl("prev_button", Button.class);
@@ -72,7 +73,7 @@ public class HelpPopupControl implements Controller {
     }
 
     @Override
-    public void init(Properties properties, Attributes attributes) {
+    public void init( @Nonnull Parameters parameters) {
 
     }
 
@@ -88,7 +89,7 @@ public class HelpPopupControl implements Controller {
     }
 
     @Override
-    public boolean inputEvent(NiftyInputEvent niftyInputEvent) {
+    public boolean inputEvent(@Nonnull NiftyInputEvent niftyInputEvent) {
         return false;
     }
 

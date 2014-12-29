@@ -2,6 +2,7 @@ package ru.game.aurora.gui.niffy;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.Parameters;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.input.NiftyInputEvent;
@@ -9,6 +10,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.SizeValue;
 import de.lessvoid.xml.xpp3.Attributes;
 
+import javax.annotation.Nonnull;
 import java.util.Properties;
 
 /**
@@ -22,17 +24,17 @@ public class ProgressBarControl implements Controller {
     private Element progressTextElement;
 
     @Override
-    public void bind(Nifty nifty, Screen screen, Element element, Properties properties, Attributes attributes) {
+    public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element, @Nonnull Parameters parameters) {
         progressBarElement = element.findElementByName("progress");
         progressTextElement = element.findElementByName("progress-text");
     }
 
     @Override
-    public void init(Properties properties, Attributes attributes) {
+    public void init(Parameters parameters) {
     }
 
     @Override
-    public boolean inputEvent(NiftyInputEvent niftyInputEvent) {
+    public boolean inputEvent(@Nonnull NiftyInputEvent niftyInputEvent) {
         return false;
     }
 

@@ -22,6 +22,7 @@ import ru.game.aurora.world.Updatable;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.planet.nature.AnimalGenerator;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -133,43 +134,47 @@ public class AuroraGame extends NiftyOverlayGame {
     }
 
     @Override
-    protected void initGameAndGUI(GameContainer gameContainer) throws SlickException {
-
-        LogManager.getLogManager().reset();
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
-
-        ResourceManager.getInstance().loadResources(AuroraGame.class.getClassLoader().getResourceAsStream("resources.xml"));
-        gameContainer.getInput().enableKeyRepeat();
-        gameContainer.setTargetFrameRate(60);
-
-        initNifty(gameContainer);
-        GUI.init(gameContainer, getNifty());
-        GUI.getInstance().getNifty().gotoScreen("main_menu");
-        mainMenu = (MainMenuController) GUI.getInstance().getNifty().findScreenController(MainMenuController.class.getCanonicalName());
-        resolutionChangeListeners.add(mainMenu);
+    protected void initGameAndGUI(@Nonnull GameContainer gameContainer)
+    {
         try {
-            AnimalGenerator.init();
-        } catch (FileNotFoundException e) {
-            throw new SlickException("Failed to initialize Monster Generator", e);
+            LogManager.getLogManager().reset();
+            SLF4JBridgeHandler.removeHandlersForRootLogger();
+            SLF4JBridgeHandler.install();
+
+            ResourceManager.getInstance().loadResources(AuroraGame.class.getClassLoader().getResourceAsStream("resources.xml"));
+            gameContainer.getInput().enableKeyRepeat();
+            gameContainer.setTargetFrameRate(60);
+
+            initNifty(gameContainer);
+            GUI.init(gameContainer, getNifty());
+            GUI.getInstance().getNifty().gotoScreen("main_menu");
+            mainMenu = (MainMenuController) GUI.getInstance().getNifty().findScreenController(MainMenuController.class.getCanonicalName());
+            resolutionChangeListeners.add(mainMenu);
+            try {
+                AnimalGenerator.init();
+            } catch (FileNotFoundException e) {
+                throw new SlickException("Failed to initialize Monster Generator", e);
+            }
+            lastFrameTime = gameContainer.getTime();
+            String musicVolumeString = Configuration.getSystemProperties().getProperty("music.volume");
+            if (musicVolumeString != null) {
+                float volume = Float.parseFloat(musicVolumeString);
+                SoundStore.get().setMusicVolume(volume);
+                SoundStore.get().setCurrentMusicVolume(volume);
+            }
+            String soundVolumeString = Configuration.getSystemProperties().getProperty("sound.volume");
+            if (soundVolumeString != null) {
+                SoundStore.get().setSoundVolume(Float.parseFloat(soundVolumeString));
+            }
+            ResourceManager.getInstance().getPlaylist("background").play();
+        } catch (SlickException ex) {
+            throw new RuntimeException(ex);
         }
-        lastFrameTime = gameContainer.getTime();
-        String musicVolumeString = Configuration.getSystemProperties().getProperty("music.volume");
-        if (musicVolumeString != null) {
-            float volume = Float.parseFloat(musicVolumeString);
-            SoundStore.get().setMusicVolume(volume);
-            SoundStore.get().setCurrentMusicVolume(volume);
-        }
-        String soundVolumeString = Configuration.getSystemProperties().getProperty("sound.volume");
-        if (soundVolumeString != null) {
-            SoundStore.get().setSoundVolume(Float.parseFloat(soundVolumeString));
-        }
-        ResourceManager.getInstance().getPlaylist("background").play();
 
     }
 
     @Override
-    protected void prepareNifty(Nifty nifty) {
+    protected void prepareNifty(@Nonnull Nifty nifty) {
         nifty.loadStyleFile("gui/style/aurora-style.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
     }
@@ -199,7 +204,8 @@ public class AuroraGame extends NiftyOverlayGame {
     }
 
     @Override
-    protected void updateGame(GameContainer gameContainer, int i) throws SlickException {
+    protected void updateGame(@Nonnull GameContainer gameContainer, int i)
+    {
         try {
             if (mainMenu != null) {
                 World loadedWorld = mainMenu.update(camera, gameContainer);
@@ -255,7 +261,8 @@ public class AuroraGame extends NiftyOverlayGame {
     }
 
     @Override
-    protected void renderGame(GameContainer gameContainer, Graphics graphics) throws SlickException {
+    protected void renderGame(@Nonnull GameContainer gameContainer, @Nonnull Graphics graphics)
+    {
         try {
             if (mainMenu != null) {
                 mainMenu.draw(graphics);
