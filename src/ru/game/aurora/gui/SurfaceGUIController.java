@@ -51,7 +51,7 @@ public class SurfaceGUIController extends GameEventListener implements ScreenCon
         GameLogger.getInstance().addAppender(this);
         logList = screen.findNiftyControl("log_list", ListBox.class);
         topPanelController = screen.findControl("top_panel", TopPanelController.class);
-        hpElement = screen.findElementByName("health_count").findElementByName("#count");
+        hpElement = screen.findElementByName("health_count").findElementById("#count");
         mapButton = screen.findElementByName("map_button");
     }
 

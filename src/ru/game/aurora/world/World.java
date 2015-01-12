@@ -149,7 +149,7 @@ public class World implements Serializable, ResolutionChangeListener {
         // should be the last so that ESC event is not consumed
         if (container.getInput().isKeyPressed(Input.KEY_ESCAPE) && (currentRoom instanceof GalaxyMap || currentRoom instanceof Planet || currentRoom instanceof StarSystem || currentRoom instanceof Dungeon)) {
             Element popup = nifty.getTopMostPopup();
-            if (popup != null && popup.findElementByName("menu_window") != null) {
+            if (popup != null && popup.findElementById("menu_window") != null) {
                 GUI.getInstance().closeIngameMenu();
             } else {
                 GUI.getInstance().showIngameMenu();

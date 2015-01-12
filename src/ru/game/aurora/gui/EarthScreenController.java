@@ -56,12 +56,12 @@ public class EarthScreenController implements ScreenController {
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        messagesList = screen.findElementByName("messages_list");
-        shipYardTab = screen.findElementByName("shipyard");
+        messagesList = screen.findElementById("messages_list");
+        shipYardTab = screen.findElementById("shipyard");
         storageList = shipYardTab.findNiftyControl("storageList", ListBox.class);
         inventoryList = shipYardTab.findNiftyControl("inventoryList", ListBox.class);
-        upgradeText = shipYardTab.findElementByName("upgrade_text");
-        upgradeImage = shipYardTab.findElementByName("upgrade_icon");
+        upgradeText = shipYardTab.findElementById("upgrade_text");
+        upgradeImage = shipYardTab.findElementById("upgrade_icon");
         freeSpace = shipYardTab.findControl("free_space", ProgressBarControl.class);
     }
 
@@ -103,9 +103,9 @@ public class EarthScreenController implements ScreenController {
     }
 
     private void updateShipyardLabels() {
-        Element sciCountElement = shipYardTab.findElementByName("sci_count").findElementByName("#count");
-        Element engiCountElement = shipYardTab.findElementByName("engi_count").findElementByName("#count");
-        Element milCountElement = shipYardTab.findElementByName("mil_count").findElementByName("#count");
+        Element sciCountElement = shipYardTab.findElementById("sci_count").findElementById("#count");
+        Element engiCountElement = shipYardTab.findElementById("engi_count").findElementById("#count");
+        Element milCountElement = shipYardTab.findElementById("mil_count").findElementById("#count");
 
         EngineUtils.setTextForGUIElement(sciCountElement, String.valueOf(world.getPlayer().getShip().getMaxScientists()));
         EngineUtils.setTextForGUIElement(engiCountElement, String.valueOf(world.getPlayer().getShip().getMaxEngineers()));
@@ -117,11 +117,11 @@ public class EarthScreenController implements ScreenController {
         if (!selected.isEmpty()) {
             ShipUpgrade su = selected.get(0);
             EngineUtils.setTextForGUIElement(upgradeText, su.getLocalizedDescription());
-            EngineUtils.setTextForGUIElement(shipYardTab.findElementByName("upgrade_name"), su.getLocalizedName(su.getLocalizationGroup()));
+            EngineUtils.setTextForGUIElement(shipYardTab.findElementById("upgrade_name"), su.getLocalizedName(su.getLocalizationGroup()));
             EngineUtils.setImageForGUIElement(upgradeImage, su.getDrawable().getImage());
         } else {
             EngineUtils.setTextForGUIElement(upgradeText, "");
-            EngineUtils.setTextForGUIElement(shipYardTab.findElementByName("upgrade_name"), "");
+            EngineUtils.setTextForGUIElement(shipYardTab.findElementById("upgrade_name"), "");
             EngineUtils.setImageForGUIElement(upgradeImage, "no_image");
         }
 
@@ -159,7 +159,7 @@ public class EarthScreenController implements ScreenController {
     public void onReleased(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
         ListBox itemsList = storageList;
-        numericId -= Integer.parseInt(itemsList.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(itemsList.getElement().findElementById("#child-root").getChildren().get(0).getId());
         itemsList.setFocusItemByIndex(numericId);
         itemsList.selectItemByIndex(numericId);
         deselectAll(inventoryList);
@@ -170,7 +170,7 @@ public class EarthScreenController implements ScreenController {
     public void onPrimaryReleased(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
         ListBox itemsList = inventoryList;
-        numericId -= Integer.parseInt(itemsList.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(itemsList.getElement().findElementById("#child-root").getChildren().get(0).getId());
         itemsList.setFocusItemByIndex(numericId);
         itemsList.selectItemByIndex(numericId);
         deselectAll(storageList);
@@ -185,16 +185,16 @@ public class EarthScreenController implements ScreenController {
         if (id.equals(inventoryList.getId()) || id.equals(storageList.getId())) {
             ShipUpgrade su = (ShipUpgrade) event.getSelection().get(0);
             EngineUtils.setTextForGUIElement(upgradeText, su.getLocalizedDescription());
-            EngineUtils.setTextForGUIElement(shipYardTab.findElementByName("upgrade_name"), su.getLocalizedName(su.getLocalizationGroup()));
+            EngineUtils.setTextForGUIElement(shipYardTab.findElementById("upgrade_name"), su.getLocalizedName(su.getLocalizationGroup()));
             EngineUtils.setImageForGUIElement(upgradeImage, su.getDrawable().getImage());
             return;
         }
 
 
         if (id.equals("itemsList")) {
-            Element imagePanel = messagesList.findElementByName("selectedItemImg");
+            Element imagePanel = messagesList.findElementById("selectedItemImg");
 
-            TextRenderer tr = messagesList.findElementByName("selectedItemText").getRenderer(TextRenderer.class);
+            TextRenderer tr = messagesList.findElementById("selectedItemText").getRenderer(TextRenderer.class);
             if (event.getSelection().isEmpty()) {
                 tr.setText("<No item selected>");
                 imagePanel.getRenderer(ImageRenderer.class).setImage(new NiftyImage(GUI.getInstance().getNifty().getRenderEngine(), new ImageSlickRenderImage(ResourceManager.getInstance().getImage("no_image"))));

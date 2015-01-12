@@ -29,7 +29,7 @@ public class ImageButtonController extends ButtonControl
     @Override
     public void bind(@Nonnull Nifty niftyParam, @Nonnull Screen screenParam, @Nonnull Element newElement, @Nonnull Parameters parameters) {
         super.bind(niftyParam, screenParam, newElement, parameters);
-        this.imageRenderer = newElement.findElementByName("#image").getRenderer(ImageRenderer.class);
+        this.imageRenderer = newElement.findElementById("#image").getRenderer(ImageRenderer.class);
         this.nifty = niftyParam;
     }
 

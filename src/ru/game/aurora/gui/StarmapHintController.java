@@ -34,11 +34,11 @@ public class StarmapHintController implements EffectImpl {
     @Override
     public void activate(Nifty nifty, Element element, EffectProperties effectProperties) {
         starMapController = (StarMapController) GUI.getInstance().getNifty().findScreenController(StarMapController.class.getCanonicalName());
-        panel = nifty.getCurrentScreen().findElementByName("starmap-hint-panel");
+        panel = nifty.getCurrentScreen().findElementById("starmap-hint-panel");
 
-        nameText = panel.findElementByName("star_name");
-        exploreText = panel.findElementByName("explored_progress");
-        commentsText = panel.findElementByName("comment");
+        nameText = panel.findElementById("star_name");
+        exploreText = panel.findElementById("explored_progress");
+        commentsText = panel.findElementById("comment");
     }
 
     @Override

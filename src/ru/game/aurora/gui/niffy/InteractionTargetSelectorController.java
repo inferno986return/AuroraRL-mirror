@@ -90,7 +90,7 @@ public class InteractionTargetSelectorController implements Controller {
         // hack: this method is called twice for some reason, second call to closePopup leads to a crash
         if (callback != null) {
             int numericId = Integer.parseInt(id.split("#")[0]);
-            numericId -= Integer.parseInt(listBox.getElement().findElementByName("#child-root").getElements().get(0).getId());
+            numericId -= Integer.parseInt(listBox.getElement().findElementById("#child-root").getChildren().get(0).getId());
             final int finalNumericId = numericId;
             GUI.getInstance().getNifty().closePopup(popupId);
             callback.stateChanged(listBox.getItems().get(finalNumericId));

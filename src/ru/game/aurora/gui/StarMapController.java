@@ -153,7 +153,7 @@ public class StarMapController implements ScreenController {
 
         myCamera.setTarget(new Movable(world.getGalaxyMap().getTilesX() / 2, world.getGalaxyMap().getTilesY() / 2));
 
-        mouseCoords = myWindow.findElementByName("mouse_pos");
+        mouseCoords = myWindow.findElementById("mouse_pos");
     }
 
     public GalaxyMapObject getGalaxyMapObjectAtMouseCoords() {

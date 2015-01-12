@@ -72,7 +72,9 @@ public class Localization {
     public static void registerGUIBungles(Nifty nifty) {
         nifty.setLocale(currentLocale);
         nifty.addResourceBundle("gui",getBundleName("gui"));
-        nifty.getResourceBundles().put("crew", getBundleName("crew"));
-        nifty.getResourceBundles().put("hints", getBundleName("hints"));
+        nifty.addResourceBundle("gui", ResourceBundle.getBundle(getBundleName("gui"), currentLocale, new UTF8Control()));
+        nifty.addResourceBundle("crew", ResourceBundle.getBundle(getBundleName("crew"), currentLocale, new UTF8Control()));
+        nifty.addResourceBundle("hints", ResourceBundle.getBundle(getBundleName("hints"), currentLocale, new UTF8Control()));
+
     }
 }

@@ -9,6 +9,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.slick2d.render.font.AbstractSlickRenderFont;
 import de.lessvoid.nifty.slick2d.render.font.UnicodeSlickRenderFont;
+import de.lessvoid.nifty.spi.render.RenderFont;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
@@ -50,7 +51,8 @@ public class GUI {
      * @param name
      */
     private void hackUnicodeFont(String name) {
-        UnicodeSlickRenderFont font = (UnicodeSlickRenderFont) nifty.createFont(name);
+        final RenderFont renderFont = nifty.createFont(name);
+        UnicodeSlickRenderFont font = (UnicodeSlickRenderFont) renderFont;
         Field field;
         try {
             field = AbstractSlickRenderFont.class.getDeclaredField("internalFont");
@@ -89,7 +91,7 @@ public class GUI {
         this.nifty = n;
         Localization.registerGUIBungles(nifty);
         nifty.registerMouseCursor("hand", "gui/images/icon-hand-clean-md.png", 0, 0);
-        hackUnicodeFont("dpix_8pt.ttf");
+      //  hackUnicodeFont("dpix_8pt.ttf");
         nifty.registerScreenController(new MainMenuController(con));
         nifty.registerScreenController(new LoadingScreenController());
         nifty.registerScreenController(new ExitConfirmationScreenController());

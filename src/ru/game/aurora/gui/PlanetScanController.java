@@ -53,16 +53,16 @@ public class PlanetScanController implements ScreenController {
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        myWindow = screen.findElementByName("planet_scan_window");
+        myWindow = screen.findElementById("planet_scan_window");
 
         shuttleDraggableElement = screen.findNiftyControl("shuttlePosition", Draggable.class);
-        landscapePanel = myWindow.findElementByName("surfaceMapPanel");
+        landscapePanel = myWindow.findElementById("surfaceMapPanel");
 
-        surfaceMapPanel = myWindow.findElementByName("surfaceMapPanel");
+        surfaceMapPanel = myWindow.findElementById("surfaceMapPanel");
 
         overlayCheckbox = myWindow.findNiftyControl("bioscan_checkbox", CheckBox.class);
 
-        atmosphereHint = myWindow.findElementByName("scan_text");
+        atmosphereHint = myWindow.findElementById("scan_text");
     }
 
     public void setPlanetToScan(BasePlanet planetToScan) {
@@ -91,7 +91,7 @@ public class PlanetScanController implements ScreenController {
                     Localization.getText("hints", "atmosphere." + p.getAtmosphere().descriptionKey()));
         }
 
-        EngineUtils.setTextForGUIElement(myWindow.findElementByName("scan_text"), planetToScan.getScanText());
+        EngineUtils.setTextForGUIElement(myWindow.findElementById("scan_text"), planetToScan.getScanText());
 
         if ((planetToScan instanceof Earth) || (planetToScan instanceof AlienHomeworld)) {
             //todo: load custom map
@@ -132,7 +132,7 @@ public class PlanetScanController implements ScreenController {
 
     @NiftyEventSubscriber(id = "shuttlePosition")
     public void onShuttleDragEnded(final String id, final DraggableDragCanceledEvent event) {
-        Element shuttleDraggableElement = GUI.getInstance().getNifty().getTopMostPopup().findElementByName("shuttlePosition");
+        Element shuttleDraggableElement = GUI.getInstance().getNifty().getTopMostPopup().findElementById("shuttlePosition");
 
         final int spriteCenterX = shuttleDraggableElement.getX() + shuttleDraggableElement.getWidth() / 2;
         final int spriteCenterY = shuttleDraggableElement.getY() + shuttleDraggableElement.getHeight() / 2;

@@ -16,13 +16,13 @@ public class StorageViewConverter implements ListBox.ListBoxViewConverter {
     @Override
     public void display(Element element, Object o) {
         Multiset.Entry<InventoryItem> item = (Multiset.Entry<InventoryItem>) o;
-        EngineUtils.setTextForGUIElement(element.findElementByName("#item"), item.getCount() + " " + item.getElement().getName());
+        EngineUtils.setTextForGUIElement(element.findElementById("#item"), item.getCount() + " " + item.getElement().getName());
     }
 
     @Override
     public int getWidth(Element element, Object o) {
         Multiset.Entry<InventoryItem> item = (Multiset.Entry<InventoryItem>) o;
-        Element text = element.findElementByName("#item");
+        Element text = element.findElementById("#item");
         final TextRenderer textRenderer = text.getRenderer(TextRenderer.class);
         return ((textRenderer.getFont() == null) ? 0 : textRenderer.getFont().getWidth(item.getCount() + " " + item.getElement().getName()) + 32);
     }

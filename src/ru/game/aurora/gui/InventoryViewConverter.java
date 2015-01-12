@@ -15,10 +15,10 @@ public class InventoryViewConverter implements ListBox.ListBoxViewConverter {
     public void display(Element element, Object o) {
         Multiset.Entry<InventoryItem> item = (Multiset.Entry<InventoryItem>) o;
 
-        EngineUtils.setTextForGUIElement(element.findElementByName("#line-text"), " " + item.getCount() + " " + item.getElement().getName());
-        EngineUtils.setImageForGUIElement(element.findElementByName("#line-icon"), item.getElement().getImage());
+        EngineUtils.setTextForGUIElement(element.findElementById("#line-text"), " " + item.getCount() + " " + item.getElement().getName());
+        EngineUtils.setImageForGUIElement(element.findElementById("#line-icon"), item.getElement().getImage());
         if (!item.getElement().isUsable()) {
-            Element useButton = element.findElementByName("#useButton");
+            Element useButton = element.findElementById("#useButton");
             if (useButton != null) {
                 useButton.hide();
             }
@@ -28,7 +28,7 @@ public class InventoryViewConverter implements ListBox.ListBoxViewConverter {
     @Override
     public int getWidth(Element element, Object o) {
         Multiset.Entry<InventoryItem> item = (Multiset.Entry<InventoryItem>) o;
-        final Element text = element.findElementByName("#line-text");
+        final Element text = element.findElementById("#line-text");
         final TextRenderer textRenderer = text.getRenderer(TextRenderer.class);
         return ((textRenderer.getFont() == null) ? 0 : textRenderer.getFont().getWidth(item.getCount() + " " + item.getElement().getName()))
                 + ((item.getElement().getImage() == null) ? 0 : item.getElement().getImage().getWidth());

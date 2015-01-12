@@ -15,13 +15,13 @@ public class SimpleInventoryViewConverter implements ListBox.ListBoxViewConverte
     @Override
     public void display(Element element, Object o) {
         Multiset.Entry<InventoryItem> item = (Multiset.Entry<InventoryItem>) o;
-        EngineUtils.setTextForGUIElement(element.findElementByName("#invtem"), " " + item.getCount() + " " + item.getElement().getName());
+        EngineUtils.setTextForGUIElement(element.findElementById("#invtem"), " " + item.getCount() + " " + item.getElement().getName());
     }
 
     @Override
     public int getWidth(Element element, Object o) {
         Multiset.Entry<InventoryItem> item = (Multiset.Entry<InventoryItem>) o;
-        Element text = element.findElementByName("#invtem");
+        Element text = element.findElementById("#invtem");
         final TextRenderer textRenderer = text.getRenderer(TextRenderer.class);
         return ((textRenderer.getFont() == null) ? 0 : textRenderer.getFont().getWidth(item.getCount() + " " + item.getElement().getName()) + 32);
     }

@@ -42,9 +42,9 @@ public class ResearchScreenController implements ScreenController {
     @Override
     public void bind(Nifty nifty, Screen screen) {
         tg = screen.findNiftyControl("research_tabs", TabGroup.class);
-        availableResearch = screen.findElementByName("active_list_screen");
-        completedResearch = screen.findElementByName("completed_list_screen");
-        window = screen.findElementByName("research_window");
+        availableResearch = screen.findElementById("active_list_screen");
+        completedResearch = screen.findElementById("completed_list_screen");
+        window = screen.findElementById("research_window");
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ResearchScreenController implements ScreenController {
         l.addAllItems(world.getPlayer().getResearchState().getCompletedProjects());
         l.getElement().layoutElements();
 
-        Element statusLines = tg.getSelectedTab().getElement().findElementByName("statusStrings");
+        Element statusLines = tg.getSelectedTab().getElement().findElementById("statusStrings");
         if (statusLines != null) {
             EngineUtils.setTextForGUIElement(statusLines, Localization.getText("gui", "research.active.status"));
         }
@@ -89,9 +89,9 @@ public class ResearchScreenController implements ScreenController {
 
     @NiftyEventSubscriber(id = "itemsList")
     public void onListBoxSelectionChanged(final String id, final ListBoxSelectionChangedEvent event) {
-        Element imagePanel = tg.getSelectedTab().getElement().findElementByName("selectedItemImg");
+        Element imagePanel = tg.getSelectedTab().getElement().findElementById("selectedItemImg");
 
-        TextRenderer tr = tg.getSelectedTab().getElement().findElementByName("selectedItemText").getRenderer(TextRenderer.class);
+        TextRenderer tr = tg.getSelectedTab().getElement().findElementById("selectedItemText").getRenderer(TextRenderer.class);
         if (event.getSelection().isEmpty()) {
             tr.setText(Localization.getText("gui", "no_item_selected"));
             imagePanel.getRenderer(ImageRenderer.class).setImage(new NiftyImage(GUI.getInstance().getNifty().getRenderEngine(), new ImageSlickRenderImage(ResourceManager.getInstance().getImage("no_image"))));
@@ -99,7 +99,7 @@ public class ResearchScreenController implements ScreenController {
         }
         Object obj = event.getSelection().get(0);
         ResearchProjectDesc researchProjectDesc;
-        Element statusLines = tg.getSelectedTab().getElement().findElementByName("statusStrings");
+        Element statusLines = tg.getSelectedTab().getElement().findElementById("statusStrings");
         if (statusLines != null) {
             EngineUtils.setTextForGUIElement(statusLines, Localization.getText("gui", "research.active.status"));
         }
@@ -159,7 +159,7 @@ public class ResearchScreenController implements ScreenController {
         ListBox itemsList = availableResearch.findNiftyControl("itemsList", ListBox.class);
         // hack. No idea how ids are distributed between list elements, they seem to start from arbitrary number and be sorted in ascending order
         // so in order to get index of clicked element, must subtract from its id id of the first one
-        numericId -= Integer.parseInt(itemsList.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(itemsList.getElement().findElementById("#child-root").getChildren().get(0).getId());
         itemsList.selectItemByIndex(numericId);
     }
 }

@@ -66,7 +66,7 @@ public class HelpPopupControl implements Controller {
 
     @Override
     public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element,  @Nonnull Parameters parameters) {
-        textElement = element.findElementByName("helpText");
+        textElement = element.findElementById("helpText");
         skipHelp = element.findNiftyControl("skipHelp", CheckBox.class);
         prevButton = element.findNiftyControl("prev_button", Button.class);
         myElement = element;

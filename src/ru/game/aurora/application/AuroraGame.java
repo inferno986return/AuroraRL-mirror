@@ -137,6 +137,7 @@ public class AuroraGame extends NiftyOverlayGame {
     protected void initGameAndGUI(@Nonnull GameContainer gameContainer)
     {
         try {
+
             LogManager.getLogManager().reset();
             SLF4JBridgeHandler.removeHandlersForRootLogger();
             SLF4JBridgeHandler.install();
@@ -144,7 +145,6 @@ public class AuroraGame extends NiftyOverlayGame {
             ResourceManager.getInstance().loadResources(AuroraGame.class.getClassLoader().getResourceAsStream("resources.xml"));
             gameContainer.getInput().enableKeyRepeat();
             gameContainer.setTargetFrameRate(60);
-
             initNifty(gameContainer);
             GUI.init(gameContainer, getNifty());
             GUI.getInstance().getNifty().gotoScreen("main_menu");

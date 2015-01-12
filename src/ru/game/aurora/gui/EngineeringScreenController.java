@@ -52,11 +52,11 @@ public class EngineeringScreenController implements ScreenController {
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        window = screen.findElementByName("engineering_window");
+        window = screen.findElementById("engineering_window");
         tg = screen.findNiftyControl("engineering_tabs", TabGroup.class);
-        pointsText = screen.findElementByName("hullPointsToRepair");
-        engiText = screen.findElementByName("assignedEngineers");
-        ruText = screen.findElementByName("requiredRuText");
+        pointsText = screen.findElementById("hullPointsToRepair");
+        engiText = screen.findElementById("assignedEngineers");
+        ruText = screen.findElementById("requiredRuText");
         projectsList = screen.findNiftyControl("itemsList", ListBox.class);
     }
 
@@ -143,8 +143,8 @@ public class EngineeringScreenController implements ScreenController {
         if (tg.getSelectedTabIndex() != 1) {
             return;
         }
-        Element imagePanel = tg.getSelectedTab().getElement().findElementByName("selectedItemImg");
-        TextRenderer tr = tg.getSelectedTab().getElement().findElementByName("selectedItemText").getRenderer(TextRenderer.class);
+        Element imagePanel = tg.getSelectedTab().getElement().findElementById("selectedItemImg");
+        TextRenderer tr = tg.getSelectedTab().getElement().findElementById("selectedItemText").getRenderer(TextRenderer.class);
         if (event.getSelection().isEmpty()) {
             tr.setText(Localization.getText("gui", "no_item_selected"));
             imagePanel.getRenderer(ImageRenderer.class).setImage(new NiftyImage(GUI.getInstance().getNifty().getRenderEngine(), new ImageSlickRenderImage(ResourceManager.getInstance().getImage("no_image"))));
@@ -213,7 +213,7 @@ public class EngineeringScreenController implements ScreenController {
         ListBox itemsList = tg.getSelectedTab().getElement().findNiftyControl("itemsList", ListBox.class);
         // hack. No idea how ids are distributed between list elements, they seem to start from arbitrary number and be sorted in ascending order
         // so in order to get index of clicked element, must subtract from its id id of the first one
-        numericId -= Integer.parseInt(itemsList.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(itemsList.getElement().findElementById("#child-root").getChildren().get(0).getId());
         itemsList.selectItemByIndex(numericId);
     }
 }

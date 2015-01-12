@@ -355,7 +355,7 @@ public class Planet extends BasePlanet implements IDungeon {
             if (topMostPopup == null) {
                 return;
             }
-            final Element shuttle_image = topMostPopup.findElementByName("shuttle_image");
+            final Element shuttle_image = topMostPopup.findElementById("shuttle_image");
 
             if (shuttle_image == null) {
                 // it is possible that some other popup will be on top, e.g. listbox item list

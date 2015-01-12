@@ -10,10 +10,10 @@ public class CrewMemberViewConverter
         implements ListBox.ListBoxViewConverter<CrewMember> {
     @Override
     public void display(Element element, CrewMember item) {
-        EngineUtils.setTextForGUIElement(element.findElementByName("#line-text"), item.getLocalizedName("crew") + "\n" + item.getLocalizedText("crew"));
-        EngineUtils.setImageForGUIElement(element.findElementByName("#line-icon"), item.getDrawable().getImage());
+        EngineUtils.setTextForGUIElement(element.findElementById("#line-text"), item.getLocalizedName("crew") + "\n" + item.getLocalizedText("crew"));
+        EngineUtils.setImageForGUIElement(element.findElementById("#line-icon"), item.getDrawable().getImage());
         if (!item.hasAction()) {
-            element.findElementByName("#callButton").hide();
+            element.findElementById("#callButton").hide();
         } else {
             Button b = element.findNiftyControl("#callButton", Button.class);
             b.getElement().show();

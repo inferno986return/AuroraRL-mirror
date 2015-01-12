@@ -25,8 +25,8 @@ public class ProgressBarControl implements Controller {
 
     @Override
     public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element, @Nonnull Parameters parameters) {
-        progressBarElement = element.findElementByName("progress");
-        progressTextElement = element.findElementByName("progress-text");
+        progressBarElement = element.findElementById("progress");
+        progressTextElement = element.findElementById("progress-text");
     }
 
     @Override

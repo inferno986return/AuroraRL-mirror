@@ -69,7 +69,7 @@ public class EarthProgressScreenController implements ScreenController {
     public void bind(Nifty nifty, Screen screen) {
         results = screen.findNiftyControl("itemsList", ListBox.class);
         total = screen.findElementByName("totalText");
-        listFont = results.getElement().findElementByName("#child-root").getElements().get(0).getRenderer(TextRenderer.class).getFont();
+        listFont = results.getElement().findElementById("#child-root").getChildren().get(0).getRenderer(TextRenderer.class).getFont();
         myWindow = screen.findElementByName("earth_progress_window");
     }
 

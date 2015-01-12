@@ -30,22 +30,22 @@ public class SaveViewConverter implements ListBox.ListBoxViewConverter<SaveGameM
 
     @Override
     public void display(Element element, SaveGameManager.SaveGameSlot item) {
-        EngineUtils.setTextForGUIElement(element.findElementByName("#line-text"), buildString(item));
-        EngineUtils.setImageForGUIElement(element.findElementByName("#line-icon"), item.getScreenshot());
+        EngineUtils.setTextForGUIElement(element.findElementById("#line-text"), buildString(item));
+        EngineUtils.setImageForGUIElement(element.findElementById("#line-icon"), item.getScreenshot());
         if (item.isAutosave) {
-            element.findElementByName("#saveButton").hide();
+            element.findElementById("#saveButton").hide();
         } else {
-            element.findElementByName("#saveButton").show();
+            element.findElementById("#saveButton").show();
         }
         if (!AuroraGame.isGameRunning()) {
-            element.findElementByName("#saveButton").disable();
+            element.findElementById("#saveButton").disable();
         } else {
-            element.findElementByName("#saveButton").enable();
+            element.findElementById("#saveButton").enable();
         }
         if (!item.isLoaded()) {
-            element.findElementByName("#loadButton").disable();
+            element.findElementById("#loadButton").disable();
         } else {
-            element.findElementByName("#loadButton").enable();
+            element.findElementById("#loadButton").enable();
         }
     }
 

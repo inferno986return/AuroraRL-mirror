@@ -17,13 +17,13 @@ public class InteractionTargetSelectionViewConverter implements ListBox.ListBoxV
     @Override
     public void display(Element element, GameObject o) {
 
-        EngineUtils.setTextForGUIElement(element.findElementByName("#line-text"), o.getName());
-        EngineUtils.setImageForGUIElement(element.findElementByName("#line-icon"), o.getImage());
+        EngineUtils.setTextForGUIElement(element.findElementById("#line-text"), o.getName());
+        EngineUtils.setImageForGUIElement(element.findElementById("#line-icon"), o.getImage());
     }
 
     @Override
     public int getWidth(Element element, GameObject o) {
-        final Element text = element.findElementByName("#line-text");
+        final Element text = element.findElementById("#line-text");
         final TextRenderer textRenderer = text.getRenderer(TextRenderer.class);
         return ((textRenderer.getFont() == null) ? 0 : textRenderer.getFont().getWidth(o.getName())
                 + ((o.getImage() == null) ? 0 : o.getImage().getWidth()));

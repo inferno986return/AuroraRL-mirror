@@ -14,13 +14,13 @@ import ru.game.aurora.util.EngineUtils;
 public class ShipUpgradeViewConverter implements ListBox.ListBoxViewConverter<ShipUpgrade> {
     @Override
     public void display(Element element, ShipUpgrade upgrade) {
-        Element text = element.findElementByName("#item");
+        Element text = element.findElementById("#item");
         EngineUtils.setTextForGUIElement(text, upgrade.getLocalizedName(upgrade.getLocalizationGroup()));
     }
 
     @Override
     public int getWidth(Element element, ShipUpgrade upgrade) {
-        Element text = element.findElementByName("#item");
+        Element text = element.findElementById("#item");
         final TextRenderer textRenderer = text.getRenderer(TextRenderer.class);
         return ((textRenderer.getFont() == null) ? 0 : textRenderer.getFont().getWidth(upgrade.getLocalizedName(upgrade.getLocalizationGroup())) + 32);
     }

@@ -196,7 +196,7 @@ public class MainMenuController implements ScreenController, ResolutionChangeLis
     public void onStartScreen() {
         background = new MainMenuBackground(AuroraGame.tilesX * AuroraGame.tileSize, AuroraGame.tilesY * AuroraGame.tileSize);
 
-        final Element loadGameButton = GUI.getInstance().getNifty().getCurrentScreen().findElementByName("panel").findElementByName("continue_game_button");
+        final Element loadGameButton = GUI.getInstance().getNifty().getCurrentScreen().findElementByName("panel").findElementById("continue_game_button");
         if (SaveGameManager.hasSaves()) {
             loadGameButton.enable();
         } else {

@@ -90,7 +90,7 @@ public class InventoryController implements ScreenController {
     @NiftyEventSubscriber(pattern = ".*Button")
     public void onClicked(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
-        numericId -= Integer.parseInt(items.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(items.getElement().findElementById("#child-root").getChildren().get(0).getId());
         items.setFocusItemByIndex(numericId);
     }
 }

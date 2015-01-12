@@ -46,10 +46,10 @@ public class TradeScreenController implements ScreenController
     public void bind(Nifty nifty, Screen screen) {
         inventoryList = screen.findNiftyControl("inventoryList", ListBox.class);
         merchantList = screen.findNiftyControl("merchantList", ListBox.class);
-        itemImage = screen.findElementByName("itemImage");
-        itemName = screen.findElementByName("itemName");
-        merchantPortrait= screen.findElementByName("trader_image");
-        creditCount = screen.findElementByName("credits_count").findElementByName("#count");
+        itemImage = screen.findElementById("itemImage");
+        itemName = screen.findElementById("itemName");
+        merchantPortrait= screen.findElementById("trader_image");
+        creditCount = screen.findElementById("credits_count").findElementById("#count");
     }
 
     @Override

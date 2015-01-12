@@ -46,10 +46,10 @@ public class ShipScreenController implements ScreenController {
         modulesListBox = screen.findNiftyControl("modules", ListBox.class);
         inventory = screen.findNiftyControl("items", ListBox.class);
         myScreen = screen;
-        myWindow = screen.findElementByName("ship_window");
+        myWindow = screen.findElementById("ship_window");
 
-        credCountElement = myScreen.findElementByName("cred_count").findElementByName("#count");
-        resCountElement = myScreen.findElementByName("res_count").findElementByName("#count");
+        credCountElement = myScreen.findElementById("cred_count").findElementById("#count");
+        resCountElement = myScreen.findElementById("res_count").findElementById("#count");
 
     }
 
@@ -103,7 +103,7 @@ public class ShipScreenController implements ScreenController {
     @NiftyEventSubscriber(pattern = ".*callButton")
     public void onCallButtonClicked(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
-        numericId -= Integer.parseInt(crewMemberListBox.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(crewMemberListBox.getElement().findElementById("#child-root").getChildren().get(0).getId());
         crewMemberListBox.setFocusItemByIndex(numericId);
     }
 

@@ -88,7 +88,7 @@ public class SaveLoadScreenController implements ScreenController {
     @NiftyEventSubscriber(pattern = ".*Button")
     public void onClicked(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
-        numericId -= Integer.parseInt(slots.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(slots.getElement().findElementById("#child-root").getChildren().get(0).getId());
         slots.setFocusItemByIndex(numericId);
     }
 }

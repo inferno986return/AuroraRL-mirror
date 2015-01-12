@@ -35,7 +35,7 @@ public class CustomHint implements EffectImpl {
     public void execute(final Element element, final float normalizedTime, final Falloff falloff, final NiftyRenderEngine r) {
         if (targetElement != null) {
             if (hintText != null) {
-                targetElement.findElementByName("content").getRenderer(TextRenderer.class).setText(hintText);
+                targetElement.findElementById("content").getRenderer(TextRenderer.class).setText(hintText);
             }
 
             targetElement.setConstraintX(new SizeValue(Math.min(GUI.getInstance().getNifty().getNiftyMouse().getX(), r.getWidth() - targetElement.getWidth() - 10)+ "px"));

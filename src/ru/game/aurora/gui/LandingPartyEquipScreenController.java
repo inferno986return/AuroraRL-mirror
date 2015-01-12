@@ -236,7 +236,7 @@ public class LandingPartyEquipScreenController implements ScreenController {
     public void onReleased(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
         ListBox itemsList = storageList;
-        numericId -= Integer.parseInt(itemsList.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(itemsList.getElement().findElementById("#child-root").getChildren().get(0).getId());
         itemsList.setFocusItemByIndex(numericId);
     }
 
@@ -245,7 +245,7 @@ public class LandingPartyEquipScreenController implements ScreenController {
     public void onPrimaryReleased(String id, ButtonClickedEvent event) {
         int numericId = Integer.parseInt(id.split("#")[0]);
         ListBox itemsList = inventoryList;
-        numericId -= Integer.parseInt(itemsList.getElement().findElementByName("#child-root").getElements().get(0).getId());
+        numericId -= Integer.parseInt(itemsList.getElement().findElementById("#child-root").getChildren().get(0).getId());
         itemsList.setFocusItemByIndex(numericId);
     }
 }

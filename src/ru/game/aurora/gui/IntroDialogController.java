@@ -70,13 +70,13 @@ public class IntroDialogController implements ScreenController, Updatable {
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        mainPanel = screen.findElementByName("mainPanel");
-        leftPortrait = mainPanel.findElementByName("leftPortrait");
-        rightPortrait = mainPanel.findElementByName("rightPortrait");
-        Element textPanel = mainPanel.findElementByName("textPanel");
-        imagePanel = screen.findElementByName("dialogImage");
-        captionText = textPanel.findElementByName("caption");
-        mainText = textPanel.findElementByName("npcText");
+        mainPanel = screen.findElementById("mainPanel");
+        leftPortrait = mainPanel.findElementById("leftPortrait");
+        rightPortrait = mainPanel.findElementById("rightPortrait");
+        Element textPanel = mainPanel.findElementById("textPanel");
+        imagePanel = screen.findElementById("dialogImage");
+        captionText = textPanel.findElementById("caption");
+        mainText = textPanel.findElementById("npcText");
     }
 
     private void update() {

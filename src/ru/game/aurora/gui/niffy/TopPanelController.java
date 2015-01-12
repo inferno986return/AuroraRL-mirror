@@ -31,9 +31,9 @@ public class TopPanelController implements Controller {
     @Override
     public void bind(@Nonnull Nifty nifty, @Nonnull Screen screen, @Nonnull Element element, @Nonnull Parameters parameters) {
         progressBarControl = element.findControl("progressbar", ProgressBarControl.class);
-        sciCountElement = element.findElementByName("sci_count").findElementByName("#count");
-        engiCountElement = element.findElementByName("engi_count").findElementByName("#count");
-        milCountElement = element.findElementByName("mil_count").findElementByName("#count");
+        sciCountElement = element.findElementById("sci_count").findElementById("#count");
+        engiCountElement = element.findElementById("engi_count").findElementById("#count");
+        milCountElement = element.findElementById("mil_count").findElementById("#count");
     }
 
     @Override
