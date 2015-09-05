@@ -11,7 +11,6 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Point;
 import ru.game.aurora.application.*;
 import ru.game.aurora.dialog.Dialog;
-import ru.game.aurora.effects.BlasterShotEffect;
 import ru.game.aurora.effects.Effect;
 import ru.game.aurora.gui.GUI;
 import ru.game.aurora.gui.niffy.FriendlyAttackConfirmationController;
@@ -160,14 +159,16 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject, ITileM
 
     @Override
     public void drawOnGlobalMap(GameContainer container, Graphics g, Camera camera, int tileX, int tileY) {
-        if (!camera.isInViewport(tileX, tileY)) {
+       if (!camera.isInViewport(tileX, tileY, 4)) {
             return;
-        }
+       }
         if (camera.getTileWidth() != 64) {
             //hack: this is galaxy map screen, where all stars are drawn within single screen
             // draw only dots, not images themselves, as they won't fit on screen and will overlap ugly
-            g.setColor(star.color);
-            EngineUtils.drawCircleCentered(g, camera.getXCoord(tileX) + camera.getTileWidth() / 2, camera.getYCoord(tileY) + camera.getTileHeight() / 2, (int) (camera.getTileWidth() / star.size), star.color, true);
+            //g.setColor(star.color);
+            //EngineUtils.drawCircleCentered(g, camera.getXCoord(tileX) + camera.getTileWidth() / 2, camera.getYCoord(tileY) + camera.getTileHeight() / 2, (int) (camera.getTileWidth() / star.size), star.color, true);
+            Image starImage = ParallaxBackground.getImage(star.size, star.color);
+            g.drawImage(starImage, camera.getXCoord(tileX) - camera.getTileWidth() / 2, camera.getYCoord(tileY) - camera.getTileHeight());
         } else {
             g.drawImage(star.getImage(), camera.getXCoord(tileX) + (camera.getTileWidth() - star.getImage().getWidth()) / 2, camera.getYCoord(tileY) + (camera.getTileHeight() - star.getImage().getHeight()) / 2);
             g.setColor(Color.white);
@@ -256,7 +257,7 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject, ITileM
             }
         }
 
-        if (container.getInput().isKeyPressed(Input.KEY_ENTER)) {
+        if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.INTERACT))) {
             interactWithObjectAtShipPosition(world);
         }
     }
@@ -413,7 +414,7 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject, ITileM
     public void doFire(World world, final GameObject targetObject, final Ship playerShip, WeaponInstance weapon, final int damage) {
         GameLogger.getInstance().logMessage(String.format(Localization.getText("gui", "space.player_attack"), damage, targetObject.getName()));
 
-        BlasterShotEffect e = new BlasterShotEffect(playerShip, targetObject, world.getCamera(), 800, weapon);
+        Effect e = weapon.getWeaponDesc().createShotEffect(playerShip, targetObject, world.getCamera(), 800);
         e.setEndListener(new IStateChangeListener<World>() {
             private static final long serialVersionUID = 8150717419595750398L;
 
@@ -490,18 +491,22 @@ public class StarSystem extends BaseSpaceRoom implements GalaxyMapObject, ITileM
 
         if (mode == MODE_MOVE) {
             updateMove(container, world);
-            for (int i = Input.KEY_1; i <= Input.KEY_9; ++i) {
-                if (container.getInput().isKeyPressed(i)) {
-                    onWeaponButtonPressed(world, i - Input.KEY_1);
+            for (int i = 0; i < InputBinding.weapons.length; ++i) {
+                if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.weapons[i]))) {
+                    onWeaponButtonPressed(world, i);
                     return;
                 }
             }
         } else {
             updateShoot(
                     world
-                    , container.getInput().isKeyPressed(Input.KEY_UP) || container.getInput().isKeyPressed(Input.KEY_RIGHT)
-                    , container.getInput().isKeyPressed(Input.KEY_DOWN) || container.getInput().isKeyPressed(Input.KEY_LEFT)
-                    , container.getInput().isKeyPressed(Input.KEY_F) || container.getInput().isKeyPressed(Input.KEY_ENTER) || container.getInput().isKeyPressed(selectedWeapon + Input.KEY_1)
+                    , container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.UP))
+                            || container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.RIGHT))
+                    , container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.DOWN))
+                            || container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.LEFT))
+                    , container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.SHOOT))
+                            || container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.INTERACT))
+                            || container.getInput().isKeyPressed(selectedWeapon + Input.KEY_1)
             );
             if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
                 onWeaponButtonPressed(world, -1);

@@ -63,7 +63,10 @@
     <resource type="image" id="klisk_station">sprites/ships/klisk_station.png</resource>
     <resource type="image" id="klisk_drone">sprites/ships/klisk_drone.png</resource>
     <resource type="image" id="klisk_dialog">sprites/portraits/klisk.png</resource>
+    <resource type="image" id="klisk_mutant_dialog">sprites/portraits/klisk_mutant.png</resource>
     <resource type="image" id="klisk_vip_dialog">sprites/portraits/klisk_vip.png</resource>
+    <resource type="image" id="klisk_mutant">sprites/planet_objects/klisk_m_sprite.png</resource>
+    <resource type="image" id="klisk_mutant_dead">sprites/planet_objects/klisk_m_dead.png</resource>
 
     <!-- zorsan -->
     <resource type="image" id="zorsan_scout">sprites/ships/zorsan_scout.png</resource>
@@ -175,6 +178,8 @@
 
     <!-- effects -->
     <resource type="image" id="blaster_shot">sprites/effects/blaster_shot.png</resource>
+    <resource type="image" id="acid_shot">sprites/effects/acid_shot.png</resource>
+    <resource type="image" id="acid_pool">sprites/effects/acid_spot.png</resource>
     <resource type="image" id="blaster_shot_red">sprites/effects/blaster_shot_red.png</resource>
     <resource type="image" id="missile_shot">sprites/effects/missile_shot.png</resource>
     <resource type="image" id="plasma_shot">sprites/effects/plasma_shot.png</resource>

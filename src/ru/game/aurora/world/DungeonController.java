@@ -25,9 +25,12 @@ import ru.game.aurora.util.EngineUtils;
 import ru.game.aurora.world.dungeon.IVictoryCondition;
 import ru.game.aurora.world.planet.LandingParty;
 import ru.game.aurora.world.planet.nature.RainCloud;
+import ru.game.aurora.world.space.StarSystem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -106,19 +109,19 @@ public class DungeonController extends Listenable implements Serializable {
         int dx = 0;
         int dy = 0;
 
-        if (container.getInput().isKeyPressed(Input.KEY_UP)) {
+        if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.UP))) {
             y--;
             dy = -1;
             actuallyMoved = true;
-        } else if (container.getInput().isKeyPressed(Input.KEY_DOWN)) {
+        } else if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.DOWN))) {
             y++;
             dy = 1;
             actuallyMoved = true;
-        } else if (container.getInput().isKeyPressed(Input.KEY_LEFT)) {
+        } else if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.LEFT))) {
             x--;
             dx = -1;
             actuallyMoved = true;
-        } else if (container.getInput().isKeyPressed(Input.KEY_RIGHT)) {
+        } else if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.RIGHT))) {
             x++;
             dx = 1;
             actuallyMoved = true;
@@ -150,7 +153,7 @@ public class DungeonController extends Listenable implements Serializable {
             actuallyMoved = false;
         }
 
-        final boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
+        final boolean enterPressed = container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.INTERACT));
         if (enterPressed) {
             interactWithObject(world);
         }
@@ -310,13 +313,12 @@ public class DungeonController extends Listenable implements Serializable {
             // firing
             final int damage = landingParty.calcDamage(world);
 
-            BlasterShotEffect blasterShotEffect = new BlasterShotEffect(
+            Effect blasterShotEffect = landingParty.getWeapon().createShotEffect(
                     landingParty
                     , world.getCamera().getXCoordWrapped(target.getX(), map.getWidthInTiles()) + world.getCamera().getTileWidth() / 2
                     , world.getCamera().getYCoordWrapped(target.getY(), map.getHeightInTiles()) + world.getCamera().getTileHeight() / 2
                     , world.getCamera()
                     , 800
-                    , landingParty.getWeapon()
                     , map
             );
             if (landingParty.getWeapon().getShotSound() != null) {
@@ -395,7 +397,7 @@ public class DungeonController extends Listenable implements Serializable {
         tilesExploredThisTurn = 0;
         switch (mode) {
             case MODE_MOVE:
-                if (container.getInput().isKeyPressed(Input.KEY_F)) {
+                if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.SHOOT))) {
                     changeMode();
                     return;
                 }
@@ -408,9 +410,12 @@ public class DungeonController extends Listenable implements Serializable {
                 }
                 updateShoot(
                         world
-                        , container.getInput().isKeyPressed(Input.KEY_UP) || container.getInput().isKeyPressed(Input.KEY_RIGHT)
-                        , container.getInput().isKeyPressed(Input.KEY_DOWN) || container.getInput().isKeyPressed(Input.KEY_LEFT)
-                        , container.getInput().isKeyPressed(Input.KEY_F) || container.getInput().isKeyPressed(Input.KEY_ENTER)
+                        , container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.UP))
+                                || container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.RIGHT))
+                        , container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.DOWN))
+                                || container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.LEFT))
+                        , container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.SHOOT))
+                                || container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.INTERACT))
                 );
                 break;
             default:
@@ -463,6 +468,21 @@ public class DungeonController extends Listenable implements Serializable {
         // check that no crew member left, AND landing party window is not opened, because if it is - then landing party can have 0 members in process of configuration
         if (landingParty.getTotalMembers() <= 0 && !GUI.getInstance().getNifty().getCurrentScreen().getScreenId().equals("landing_party_equip_screen")) {
             onLandingPartyDestroyed(world);
+        }
+
+        if (world.isUpdatedThisFrame()) {
+            // sort objects by their y coordinate so that they overlap correctly
+            Collections.sort(map.getObjects(), new Comparator<GameObject>() {
+                @Override
+                public int compare(GameObject o1, GameObject o2) {
+                    int coordsCompare = Integer.compare(o1.getY(), o2.getY());
+                    if (coordsCompare == 0) {
+                        return Integer.compare(o1.getDrawOrder(), o2.getDrawOrder());
+                    } else {
+                        return coordsCompare;
+                    }
+                }
+            });
         }
     }
 
@@ -538,7 +558,11 @@ public class DungeonController extends Listenable implements Serializable {
         }
         world.setCurrentRoom(prevRoom);
         prevRoom.returnTo(world);
-        landingParty.onReturnToShip(world);
+        if (prevRoom instanceof StarSystem) {
+            landingParty.onReturnToShip(world);
+        } else {
+            landingParty.setPos(myDungeon.getX(), myDungeon.getY());
+        }
 
         if (conditionsSatisfied && successDialog != null) {
             world.addOverlayWindow(successDialog);

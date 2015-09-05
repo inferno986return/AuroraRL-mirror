@@ -11,6 +11,9 @@ voyager - Voyager ship object
 solar_system - points to StarSystem object
 skipHelp - if set, no help popups will be show
 
+geodataResearchMultiplier - research points obtained from geodata are multiplied by this value
+geodataPriceMultiplier - geodata price in credits is increased by this multiplier
+landingPartyHPBonus - additional hp for landing party
 ==============================
 Main quest:
 
@@ -183,3 +186,14 @@ earth.advanced_lasers - set by some research, humanity weapons are more powerful
 
 messages.scientist.received - if received a private messages from the scientist chain
 messages.mother.received - if received a private messages from mother of a killed crew member
+
+===========================
+heritage.monsters_killed
+heritage.monster_collected
+heritage.quest_started
+heritage.quest_completed
+heritage.first_monster_killed - set when killed but not yet reported
+heritage.second_monster_killed
+heritage.third_monster_killed
+heritage.fourth_monster_killed
+heritage.fifth_monster_killed

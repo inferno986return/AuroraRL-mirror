@@ -18,7 +18,9 @@ import ru.game.aurora.player.research.projects.AlienRaceResearch;
 import ru.game.aurora.world.World;
 import ru.game.aurora.world.generation.aliens.bork.BorkGenerator;
 import ru.game.aurora.world.generation.aliens.zorsan.ZorsanGenerator;
+import ru.game.aurora.world.generation.humanity.HumanityGenerator;
 import ru.game.aurora.world.generation.quest.EarthInvasionGenerator;
+import ru.game.aurora.world.generation.quest.heritage.HeritageKliskDialogListener;
 import ru.game.aurora.world.planet.InventoryItem;
 import ru.game.aurora.world.quest.JournalEntry;
 import ru.game.aurora.world.space.ShipLootItem;
@@ -64,18 +66,37 @@ public class KliskMainDialogListener implements DialogListener {
             case 2:
                 TradeScreenController.openTrade("klisk_dialog", getDefaultTradeInventory(world), world.getFactions().get(KliskGenerator.NAME));
                 break;
-
-// initial quest - trading of race information
-
-            case 500:
-                if (flags.containsKey("base_info")) {
-                    world.getPlayer().changeResource(world, Resources.CREDITS, 5);
-                } else {
-                    world.getPlayer().changeResource(world, Resources.CREDITS, 10);
-                }
+            case 128:
+                // this is the heritage quest
+                world.getGlobalVariables().put("heritage.quest_started", true);
+                world.getPlayer().changeResource(world, Resources.CREDITS, 10);
+                Dialog heritageStartDialog = Dialog.loadFromFile("dialogs/encounters/heritage/heritage_klisk.json");
+                heritageStartDialog.addListener(new DialogListener() {
+                    @Override
+                    public void onDialogEnded(World world, Dialog dialog, int returnCode, Map<String, String> flags) {
+                        if (returnCode == 1) {
+                            // player has accepted the quest to hunt klisk mutants
+                            world.getReputation().updateReputation(KliskGenerator.NAME, HumanityGenerator.NAME, 1);
+                            world.getGlobalVariables().put("heritage.quest_started", true);
+                            world.getPlayer().getJournal().addQuestEntries("heritage", "klisk_accept");
+                        } else {
+                            world.getPlayer().getJournal().questCompleted("heritage", "klisk_refuse");
+                            world.getGlobalVariables().put("heritage.quest_started", false);
+                        }
+                    }
+                });
+                world.addOverlayWindow(heritageStartDialog);
                 break;
+            case 129:
+                Dialog heritageEndDialog = Dialog.loadFromFile("dialogs/encounters/heritage/heritage_klisk_final.json");
+                heritageEndDialog.addListener(new HeritageKliskDialogListener());
+                break;
+        }
 
-///////
+        if (flags.containsKey("small_reward")) {
+            world.getPlayer().changeResource(world, Resources.CREDITS, 5);
+        } else if (flags.containsKey("large_reward")) {
+            world.getPlayer().changeResource(world, Resources.CREDITS, 10);
         }
 
         if (flags.containsKey("planet_info")) {
@@ -84,7 +105,7 @@ public class KliskMainDialogListener implements DialogListener {
             flags.remove("planet_info");
         }
 
-        if (returnCode >= 100 && returnCode <= 500) {
+        if (flags.containsKey("base_info") || flags.containsKey("full_info")) {
             if (flags.containsKey("klisk.discount")) {
                 world.getGlobalVariables().put("klisk.discount", 10);
             }
@@ -104,6 +125,13 @@ public class KliskMainDialogListener implements DialogListener {
                 research = new AlienRaceResearch("zorsan", (AlienRace) world.getFactions().get(ZorsanGenerator.NAME), new JournalEntry("zorsan", "main"));
                 world.getPlayer().getResearchState().addNewAvailableProject(research);
             }
+            world.getPlayer().getJournal().questCompleted("last_beacon", "klisk_homeworlds", "end");
+            world.getGlobalVariables().put("klisk.coordinates_traded", true);
+
+            ((AlienRace) world.getFactions().get(ZorsanGenerator.NAME)).setKnown(true);
+            ((AlienRace) world.getFactions().get(BorkGenerator.NAME)).setKnown(true);
+            ((AlienRace) world.getFactions().get(RoguesGenerator.NAME)).setKnown(true);
+            ((AlienRace) world.getFactions().get(KliskGenerator.NAME)).setKnown(true);
 
 
             if (flags.containsKey("planet_info") || world.getGlobalVariables().containsKey("klisk.planet_info")) {
@@ -121,13 +149,7 @@ public class KliskMainDialogListener implements DialogListener {
                     new EarthInvasionGenerator().updateWorld(world);
                 }
             }
-            world.getPlayer().getJournal().questCompleted("last_beacon", "klisk_homeworlds", "end");
-            world.getGlobalVariables().put("klisk.coordinates_traded", true);
 
-            ((AlienRace) world.getFactions().get(ZorsanGenerator.NAME)).setKnown(true);
-            ((AlienRace) world.getFactions().get(BorkGenerator.NAME)).setKnown(true);
-            ((AlienRace) world.getFactions().get(RoguesGenerator.NAME)).setKnown(true);
-            ((AlienRace) world.getFactions().get(KliskGenerator.NAME)).setKnown(true);
         }
 
         if (returnCode == 101) {

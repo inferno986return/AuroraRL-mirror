@@ -25,22 +25,37 @@ import java.util.Iterator;
 import java.util.Stack;
 
 public class GUI {
-    private final Nifty nifty;
-
     private static GUI instance;
-
-    private Element ingameMenuInstance = null;
-
-    private World worldInstance;
-
-    private GameContainer containerInstance;
-
+    private final Nifty nifty;
     private final Stack<String> screens = new Stack<>();
-
+    private Element ingameMenuInstance = null;
+    private World worldInstance;
+    private GameContainer containerInstance;
     private String nextScreen = null;
+
+    private GUI(GameContainer con, Nifty n) {
+        this.nifty = n;
+        Localization.registerGUIBungles(nifty);
+        nifty.registerMouseCursor("hand", "gui/images/icon-hand-clean-md.png", 0, 0);
+        hackUnicodeFont("dpix_8pt.ttf");
+        nifty.registerScreenController(new MainMenuController(con));
+        nifty.registerScreenController(new LoadingScreenController());
+        nifty.registerScreenController(new ExitConfirmationScreenController());
+        nifty.registerScreenController(new InputBindingScreenController(con.getInput()));
+        nifty.addXml("gui/screens/main_menu.xml");
+        nifty.addXml("gui/screens/saveload_screen.xml");
+        nifty.addXml("gui/screens/misc_screens.xml");
+        nifty.addXml("gui/screens/loading_screen.xml");
+        nifty.addXml("gui/screens/settings_screen.xml");
+        nifty.addXml("gui/screens/input_binding_screen.xml");
+    }
 
     public static void init(GameContainer con, Nifty n) {
         instance = new GUI(con, n);
+    }
+
+    public static GUI getInstance() {
+        return instance;
     }
 
     public Nifty getNifty() {
@@ -116,25 +131,6 @@ public class GUI {
         nifty.gotoScreen(screens.pop());
     }
 
-    private GUI(GameContainer con, Nifty n) {
-        this.nifty = n;
-        Localization.registerGUIBungles(nifty);
-        nifty.registerMouseCursor("hand", "gui/images/icon-hand-clean-md.png", 0, 0);
-        hackUnicodeFont("dpix_8pt.ttf");
-        nifty.registerScreenController(new MainMenuController(con));
-        nifty.registerScreenController(new LoadingScreenController());
-        nifty.registerScreenController(new ExitConfirmationScreenController());
-        nifty.addXml("gui/screens/main_menu.xml");
-        nifty.addXml("gui/screens/saveload_screen.xml");
-        nifty.addXml("gui/screens/misc_screens.xml");
-        nifty.addXml("gui/screens/loading_screen.xml");
-        nifty.addXml("gui/screens/settings_screen.xml");
-    }
-
-    public static GUI getInstance() {
-        return instance;
-    }
-
     public void onWorldLoaded(GameContainer con, World world) {
         worldInstance = world;
         containerInstance = con;
@@ -179,6 +175,7 @@ public class GUI {
                 "gui/screens/ingame_menu.xml",
                 "gui/screens/trade_screen.xml",
                 "gui/screens/dialog_screen.xml",
+                "gui/screens/humanity_progress_screen.xml",
                 "gui/screens/story_screen.xml",
                 "gui/screens/earth_progress.xml",
                 "gui/screens/engineering_screen.xml",

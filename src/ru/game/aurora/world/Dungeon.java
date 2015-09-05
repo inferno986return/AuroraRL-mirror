@@ -9,6 +9,7 @@ import ru.game.aurora.dialog.DialogListener;
 import ru.game.aurora.gui.GUI;
 import ru.game.aurora.world.planet.LandingParty;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,6 +24,8 @@ public class Dungeon implements Room, IDungeon {
 
     private Dialog enterDialog;
 
+    private BasePositionable landingPartyPrevCoords;
+
     /**
      * If set to true, and landing party is lost, this leads to a game over
      */
@@ -30,6 +33,11 @@ public class Dungeon implements Room, IDungeon {
 
     // custom background music that should be played in this dungeon
     private String playlistName;
+
+    /**
+     * Just a custom userData that can be used to store dungeon id or anything else
+     */
+    private Map<String, String> userData;
 
     /**
      * If dungeon has an enter dialog - first show that dialog, and only if it ends with return code 1 - actually
@@ -111,6 +119,7 @@ public class Dungeon implements Room, IDungeon {
         world.setCurrentRoom(this);
         GUI.getInstance().getNifty().gotoScreen("surface_gui");
         LandingParty landingParty = world.getPlayer().getLandingParty();
+        landingPartyPrevCoords = new BasePositionable(landingParty.x, landingParty.y);
         landingParty.setPos(map.getEntryPoint().getX(), map.getEntryPoint().getY());
         landingParty.onLaunch(world);
         world.getCamera().setTarget(landingParty);
@@ -163,5 +172,31 @@ public class Dungeon implements Room, IDungeon {
 
     public void setCommanderInParty(boolean commanderInParty) {
         isCommanderInParty = commanderInParty;
+    }
+
+    public Map<String, String> getUserData() {
+        if (userData == null) {
+            userData = new HashMap<>();
+        }
+        return userData;
+    }
+
+    public BasePositionable getLandingPartyPrevCoords() {
+        return landingPartyPrevCoords;
+    }
+
+    @Override
+    public int getX() {
+        return landingPartyPrevCoords.getX();
+    }
+
+    @Override
+    public int getY() {
+        return landingPartyPrevCoords.getY();
+    }
+
+    @Override
+    public void setPos(int newX, int newY) {
+
     }
 }

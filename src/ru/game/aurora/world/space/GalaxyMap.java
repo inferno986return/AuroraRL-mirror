@@ -7,8 +7,6 @@ package ru.game.aurora.world.space;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.tools.*;
-import de.lessvoid.nifty.tools.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -16,11 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.game.aurora.application.Camera;
 import ru.game.aurora.application.CommonRandom;
+import ru.game.aurora.application.InputBinding;
 import ru.game.aurora.gui.GUI;
 import ru.game.aurora.gui.StarMapController;
+import ru.game.aurora.util.ProbabilitySet;
 import ru.game.aurora.world.*;
 
-import java.awt.*;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -159,7 +158,7 @@ public class GalaxyMap extends BaseSpaceRoom {
 
             if (objects.get(idx).canBeEntered()) {
                 hasEnterableObject = true;
-                if (container.getInput().isKeyPressed(Input.KEY_ENTER)) {
+                if (container.getInput().isKeyPressed(InputBinding.keyBinding.get(InputBinding.Action.INTERACT))) {
                     enterRoom(objects.get(idx));
                 }
             }
@@ -199,6 +198,33 @@ public class GalaxyMap extends BaseSpaceRoom {
         world.setCurrentRoom(r);
         r.enter(world);
         world.setUpdatedThisFrame(true);
+    }
+
+    public StarSystem getRandomNonQuestStarsystemInRange(int x, int y, int range, StarSystemListFilter filter) {
+        ProbabilitySet<StarSystem> resultSet = new ProbabilitySet<>();
+        for (GalaxyMapObject obj : objects) {
+            if (!StarSystem.class.isAssignableFrom(obj.getClass())) {
+                continue;
+            }
+
+            StarSystem ss = (StarSystem) obj;
+            if (ss.isQuestLocation()) {
+                continue;
+            }
+
+            if (filter != null && !filter.filter(ss)) {
+                continue;
+            }
+
+            if (BasePositionable.getDistance(x, y, obj.getX(), obj.getY()) < range) {
+                resultSet.put(ss, 1.0);
+            }
+        }
+
+        if (resultSet.isEmpty()) {
+            return null;
+        }
+        return resultSet.getRandom();
     }
 
     public StarSystem getClosestStarSystem(StarSystem s) {
